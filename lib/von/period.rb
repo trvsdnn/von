@@ -2,14 +2,17 @@ module Von
   class Period
     AVAILABLE_PERIODS = [ :hourly, :daily, :weekly, :monthly, :yearly ]
 
-    def initialize(counter, period)
+    attr_reader :length
+
+    def initialize(counter, period, length)
       @counter = counter
       @period  = period
+      @length  = length
       @now     = Time.now
     end
 
     def time_unit
-      case @period
+      @time_unit ||= case @period
       when :hourly
         :hour
       when :daily
@@ -23,19 +26,23 @@ module Von
       end
     end
 
+    def hours?
+      @period == :hourly
+    end
+
     def format
-      Von.config.send(:"#{@period}_format")
+      @format ||= Von.config.send(:"#{@period}_format")
     end
 
     def hash
-      "#{Von.config.namespace}:#{@counter}:#{@period}"
+      @hash ||= "#{Von.config.namespace}:#{@counter}:#{@period}"
     end
 
     def list
-      "#{Von.config.namespace}:lists:#{@counter}:#{@period}"
+      @list ||= "#{Von.config.namespace}:lists:#{@counter}:#{@period}"
     end
 
-    def key
+    def field
       @now.strftime(format)
     end
   end

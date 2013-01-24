@@ -37,6 +37,10 @@ Or install it yourself as:
     Von.increment('something')      # bumps 'something'
     Von.increment('something:else') # bumps 'something' (total only) and 'something:else'
     Von.increment('foo')            # bumps 'foo'
+    
+    # Retrieving counts
+    Von.count('something')         # retrieve total count
+    Von.count('something', :daily) # retrieve daily count
 
 ## Contributing
 

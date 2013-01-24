@@ -12,27 +12,27 @@ describe Von do
     Von.expects(:connection).returns(connection).at_least_once
   end
 
-  it "increments the all counter if given a single key" do
+  it "increments the total counter if given a single key" do
     Von.increment('foo')
 
     @store.has_key?('von:foo').must_equal true
-    @store['von:foo']['all'].must_equal 1
+    @store['von:foo']['total'].must_equal 1
 
     Von.increment('foo')
-    @store['von:foo']['all'].must_equal 2
+    @store['von:foo']['total'].must_equal 2
   end
 
-  it "increments the all counter for a key and it's parent keys" do
+  it "increments the total counter for a key and it's parent keys" do
     Von.increment('foo:bar')
 
     @store.has_key?('von:foo').must_equal true
-    @store['von:foo']['all'].must_equal 1
+    @store['von:foo']['total'].must_equal 1
     @store.has_key?('von:foo:bar').must_equal true
-    @store['von:foo:bar']['all'].must_equal 1
+    @store['von:foo:bar']['total'].must_equal 1
 
     Von.increment('foo:bar')
-    @store['von:foo']['all'].must_equal 2
-    @store['von:foo:bar']['all'].must_equal 2
+    @store['von:foo']['total'].must_equal 2
+    @store['von:foo:bar']['total'].must_equal 2
   end
 
   it "increments a month counter" do
@@ -45,7 +45,7 @@ describe Von do
 
     @store.has_key?('von:foo').must_equal true
     @store.has_key?('von:foo:monthly').must_equal true
-    @store['von:foo']['all'].must_equal 2
+    @store['von:foo']['total'].must_equal 2
     @store['von:foo:monthly']['2013-01'].must_equal 2
     @store['von:lists:foo:monthly'].size.must_equal 1
   end
@@ -61,7 +61,7 @@ describe Von do
 
     @store.has_key?('von:foo').must_equal true
     @store.has_key?('von:foo:monthly').must_equal true
-    @store['von:foo']['all'].must_equal 2
+    @store['von:foo']['total'].must_equal 2
     @store['von:foo:monthly'].has_key?('2013-02').must_equal true
     @store['von:lists:foo:monthly'].size.must_equal 1
   end

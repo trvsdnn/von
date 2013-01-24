@@ -13,7 +13,7 @@ module Von
 
     def reset!
       @counter_options = {}
-
+      # all keys are prefixed with this namespace
       self.namespace = 'von'
       # 2013
       self.yearly_format  = '%Y'
@@ -27,26 +27,12 @@ module Von
       self.hourly_format  = '%Y-%m-%d %H:00'
     end
 
-    def counter(key, options = {})
-      @counter_options[key] = options
+    def counter(field, options = {})
+      @counter_options[field.to_sym] = options
     end
 
-    def counter_options(counter)
-      @counter_options[counter] ||= {}
-    end
-
-    def counter_periods(counter)
-      counter_options(counter).select do |k|
-        Period::AVAILABLE_PERIODS.include?(k)
-      end
-    end
-
-    def from_hash!(attributes_hash = {})
-      return if attributes_hash.empty?
-
-      attributes_hash.each do |key, value|
-        send(:"#{key}=", value)
-      end
+    def counter_options(field)
+      @counter_options[field.to_sym] ||= {}
     end
 
     def configure(&block)
