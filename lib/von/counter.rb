@@ -2,25 +2,35 @@ module Von
   class Counter
     CHILD_REGEX  = /:[^:]+\z/
     PARENT_REGEX = /:?[^:]+\z/
-
+    
+    # Initialize a new Counter
+    #
+    # field - counter field name
     def initialize(field)
       @field = field.to_sym
     end
-
+    
+    # Returns options specified in config for this Counter
     def options
       @options ||= Von.config.counter_options(@field)
     end
-
+    
+    # Returns periods specified in config for this Counter
     def periods
       @periods ||= options.select { |k|
         Period::AVAILABLE_PERIODS.include?(k)
       }.inject({}) { |h, (p, l)| h[p] = Period.new(@field, p, l); h }
     end
 
+    # Returns the Redis hash key used for storing counts for this Counter
     def hash_key
       @hash_key ||= "#{Von.config.namespace}:#{@field}"
     end
 
+    # Increment the Redis count for this Counter.
+    # If the field is a Period, we increment the Period.
+    #
+    # field - the Redis field containing the count
     def increment(field = 'total')
       if field.is_a?(Period)
         increment_period(field)
@@ -30,6 +40,9 @@ module Von
       end
     end
 
+    # Increment the Redis count for a Period
+    #
+    # period - The Period to increment
     def increment_period(period)
       Von.connection.hincrby(period.hash_key, period.field, 1)
       unless Von.connection.lrange(period.list_key, 0, -1).include?(period.field)
@@ -42,6 +55,9 @@ module Von
       end
     end
 
+    # Increment the parent keys of this Counter.
+    # Example: increment('something:foo:bar') would increment
+    # 'something:foo:bar', 'something:foo', 'something'
     def increment_parents
       field = @field.to_s
       return if field !~ CHILD_REGEX
@@ -54,7 +70,15 @@ module Von
       end
     end
 
-    def count(period)
+    # Lookup the count for this Counter in Redis.
+    # If a Period argument is given we lookup the count for
+    # all of the possible units (not expired), zeroing ones that
+    # aren't set in Redis already.
+    #
+    # period - A Period to lookup
+    #
+    # Returns an Integer representing the count or an Array of counts.
+    def count(period = nil)
       if period.nil?
         Von.connection.hget(hash_key, 'total')
       else
