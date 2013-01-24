@@ -2,6 +2,7 @@ module Von
   class Period
     AVAILABLE_PERIODS = [ :hourly, :daily, :weekly, :monthly, :yearly ]
 
+    attr_reader :counter
     attr_reader :length
 
     def initialize(counter, period, length)
@@ -34,11 +35,11 @@ module Von
       @format ||= Von.config.send(:"#{@period}_format")
     end
 
-    def hash
+    def hash_key
       @hash ||= "#{Von.config.namespace}:#{@counter}:#{@period}"
     end
 
-    def list
+    def list_key
       @list ||= "#{Von.config.namespace}:lists:#{@counter}:#{@period}"
     end
 
