@@ -36,8 +36,8 @@ describe Von do
   end
 
   it "increments a month counter" do
-    Von.config.configure do
-      counter 'foo', :monthly => 1
+    Von.configure do |config|
+      config.counter 'foo', :monthly => 1
     end
 
     Von.increment('foo')
@@ -51,8 +51,8 @@ describe Von do
   end
 
   it "expires counters past the limit" do
-    Von.config.configure do
-      counter 'foo', :monthly => 1
+    Von.configure do |config|
+      config.counter 'foo', :monthly => 1
     end
 
     Von.increment('foo')
@@ -75,8 +75,8 @@ describe Von do
   end
 
   it "gets a count for a time period and 0s missing entries" do
-    Von.config.configure do
-      counter 'foo', :monthly => 1, :hourly => 6
+    Von.configure do |config|
+      config.counter 'foo', :monthly => 1, :hourly => 6
     end
 
     Timecop.freeze(Time.local(2013, 02, 01, 05))

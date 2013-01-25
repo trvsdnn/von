@@ -13,9 +13,7 @@ describe Von::Config do
   end
 
   it 'initializes a config and overloads it with a block' do
-    @config.configure do
-      self.namespace = 'something'
-    end
+    @config.namespace = 'something'
 
     @config.namespace.must_equal 'something'
   end
@@ -23,12 +21,21 @@ describe Von::Config do
   it 'stores counter options per key and retrieves them' do
     options = { :monthly => 3, :total => false }
 
-    @config.configure do
-      counter 'bar', options
-    end
+    @config.counter 'bar', options
 
     @config.namespace.must_equal 'von'
     @config.counter_options('bar').must_equal options
+  end
+
+  it "allows config options to be updated via configure" do
+    options = { :monthly => 3, :total => false }
+
+    Von.configure do |config|
+      config.counter 'bar', options
+    end
+
+    Von.config.namespace.must_equal 'von'
+    Von.config.counter_options('bar').must_equal options
   end
 
 end

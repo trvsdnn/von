@@ -8,7 +8,7 @@ require 'active_support/time'
 
 module Von
   def self.connection
-    @connection ||= Redis.current
+    @connection ||= config.redis
   end
 
   def self.config

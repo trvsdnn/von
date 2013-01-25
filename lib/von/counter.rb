@@ -2,19 +2,19 @@ module Von
   class Counter
     CHILD_REGEX  = /:[^:]+\z/
     PARENT_REGEX = /:?[^:]+\z/
-    
+
     # Initialize a new Counter
     #
     # field - counter field name
     def initialize(field)
       @field = field.to_sym
     end
-    
+
     # Returns options specified in config for this Counter
     def options
       @options ||= Von.config.counter_options(@field)
     end
-    
+
     # Returns periods specified in config for this Counter
     def periods
       @periods ||= options.select { |k|

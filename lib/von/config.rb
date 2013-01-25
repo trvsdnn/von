@@ -27,16 +27,24 @@ module Von
       self.hourly_format  = '%Y-%m-%d %H:00'
     end
 
+    def redis=(arg)
+      if arg.is_a? Redis
+        @redis = arg
+      else
+        @redis = Redis.new(arg)
+      end
+    end
+
+    def redis
+      @redis
+    end
+
     def counter(field, options = {})
       @counter_options[field.to_sym] = options
     end
 
     def counter_options(field)
       @counter_options[field.to_sym] ||= {}
-    end
-
-    def configure(&block)
-      instance_eval &block
     end
 
   end
