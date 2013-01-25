@@ -8,8 +8,8 @@ Gem::Specification.new do |gem|
   gem.version       = Von::VERSION
   gem.authors       = ["blahed"]
   gem.email         = ["tdunn13@gmail.com"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
+  gem.description   = "Von is an opinionated Redis stats tracker."
+  gem.summary       = "Von is an opinionated Redis stats tracker."
   gem.homepage      = ""
 
   gem.files         = `git ls-files`.split($/)
