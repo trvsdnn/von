@@ -1,4 +1,4 @@
-# Von [![Build Status](https://secure.travis-ci.org/blahed/von.png)](http://travis-ci.org/blahed/von)
+# Von [![Build Status](https://travis-ci.org/blahed/von.png?branch=master)](https://travis-ci.org/blahed/von)
 
 Von is an opinionated Redis stats tracker. It works with keys, you choose one, Von increments it. It has a few built in conveniences:
 
