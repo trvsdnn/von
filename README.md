@@ -41,7 +41,7 @@ Von.increment('uploads')
 # get the total downloads (returns an Integer)
 Von.count('downloads')             #=> 4
 # get the monthly counts (returns an Array of Hashes)
-Von.count('downloads', :monthly)   #=> [ { '2012-03 => 3}, { '2013-04' => 1 }]
+Von.count('uploads', :monthly)   #=> [ { '2012-03 => 3}, { '2013-04' => 1 }, { '2013-05' => 0 }]
 
 ```
 
