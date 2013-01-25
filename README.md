@@ -1,4 +1,4 @@
-# Von
+# Von [![Build Status](https://secure.travis-ci.org/blahed/von.png)](http://travis-ci.org/blahed/von)
 
 TODO: Write a gem description
 
