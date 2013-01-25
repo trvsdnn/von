@@ -24,7 +24,6 @@ Von.configure do |config|
     # Keep monthly stats for 3 months and yearly stats for 2 years
     config.counter 'uploads', :monthly => 3, :yearly => 2
 end
-
 ```
 
 ### Incrementing Time Periods
@@ -45,6 +44,8 @@ Von.count('downloads')             #=> 4
 Von.count('downloads', :monthly)   #=> [ { '2012-03 => 3}, { '2013-04' => 1 }]
 
 ```
+
+One nice thing to note, if you're counting a time period and there wasn't a value stored for the particular time unit, it'll be populated with a zero, this ensures that if you want 30 days of stats, you get 30 days of stats.
 
 ## Installation
 
