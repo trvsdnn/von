@@ -2,6 +2,14 @@
 
 Von is an opinionated Redis stats tracker. It works with keys, you choose one, Von increments it. It has a few built in conveniences:
 
+## Requirements
+
+Von uses Redis for storing counters so you'll need it get going. If you're on OS X you can use homebrew:
+
+```bash
+$ brew install redis
+```
+
 ## Auto Incrementing Parent Keys
 
 Keys are namespaced and every parent key is incremented when you increment a child key, for example:
@@ -35,7 +43,7 @@ Von.increment('downloads')
 Von.increment('uploads')
 ```
 
-## Counting (getting the stats)
+## Getting Stats
 
 ```ruby
 # get the total downloads (returns an Integer)
@@ -45,7 +53,7 @@ Von.count('uploads', :monthly)  #=> [ { '2012-03 => 3}, { '2013-04' => 1 }, { '2
 
 ```
 
-One nice thing to note, if you're counting a time period and there wasn't a value stored for the particular time unit, it'll be populated with a zero, this ensures that if you want 30 days of stats, you get 30 days of stats.
+One nice thing to note, if you're counting a time period and there wasn't a value stored for the particular hour/day/week/etc, it'll be populated with a zero, this ensures that if you want 30 days of stats, you get 30 days of stats.
 
 ## Installation
 
