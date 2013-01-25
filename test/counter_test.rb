@@ -5,7 +5,7 @@ describe Von::Counter do
 
   before :each do
     Timecop.freeze(Time.local(2013, 01))
-    Von.config.reset!
+    Von.config.init!
     connection = Von::TestConnection.new
     @store     = connection.store
     Von.expects(:connection).returns(connection).at_least_once

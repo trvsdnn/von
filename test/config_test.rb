@@ -4,7 +4,7 @@ describe Von::Config do
 
   before :each do
     @config = Von::Config
-    @config.reset!
+    @config.init!
   end
 
   it 'intiializes a config with defaults' do

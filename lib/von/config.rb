@@ -11,7 +11,7 @@ module Von
     attr_accessor :daily_format
     attr_accessor :hourly_format
 
-    def reset!
+    def init!
       @counter_options = {}
       # all keys are prefixed with this namespace
       self.namespace = 'von'

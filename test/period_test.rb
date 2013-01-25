@@ -3,7 +3,7 @@ describe Von::Period do
 
   before :each do
     @config = Von::Config
-    @config.reset!
+    @config.init!
   end
 
   it "intiializes given a counter, period, and length" do

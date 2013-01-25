@@ -29,4 +29,5 @@ module Von
     counter.count(period)
   end
 
+  config.init!
 end

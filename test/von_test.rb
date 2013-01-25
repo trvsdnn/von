@@ -3,7 +3,7 @@ require 'test_helper'
 describe Von do
 
   before :each do
-    Von.config.reset!
+    Von.config.init!
     connection = Von::TestConnection.new
     @store     = connection.store
     Von.expects(:connection).returns(connection).at_least_once
