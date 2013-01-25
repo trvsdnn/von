@@ -7,8 +7,8 @@ Von is an opinionated Redis stats tracker. It works with keys, you choose one, V
 Keys are namespaced and every parent key is incremented when you increment a child key, for example:
 
 ```ruby
-Von.increment('downloads')              # bumps the 'downloads' key 1 time
-Von.increment('downloads:app123')       # bumps the 'downloads:app123' key 1 time AND the 'downloads' key 1 time
+Von.increment('downloads')          # bumps the 'downloads' key 1 time
+Von.increment('downloads:app123')   # bumps the 'downloads:app123' key 1 time AND the 'downloads' key 1 time
 ```
 
 ## Time Period Grouping and Limiting
@@ -39,9 +39,9 @@ Von.increment('uploads')
 
 ```ruby
 # get the total downloads (returns an Integer)
-Von.count('downloads')             #=> 4
+Von.count('downloads')  #=> 4
 # get the monthly counts (returns an Array of Hashes)
-Von.count('uploads', :monthly)   #=> [ { '2012-03 => 3}, { '2013-04' => 1 }, { '2013-05' => 0 }]
+Von.count('uploads', :monthly)  #=> [ { '2012-03 => 3}, { '2013-04' => 1 }, { '2013-05' => 0 }]
 
 ```
 
