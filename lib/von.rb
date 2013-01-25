@@ -3,8 +3,8 @@ require 'von/counter'
 require 'von/period'
 require 'von/version'
 
-require 'active_support/all'
 require 'redis'
+require 'active_support/time'
 
 module Von
   def self.connection
@@ -13,6 +13,10 @@ module Von
 
   def self.config
     Config
+  end
+
+  def self.configure
+    yield(config)
   end
 
   def self.increment(field)
