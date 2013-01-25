@@ -21,9 +21,7 @@ module Von
 
   def self.increment(field)
     counter = Counter.new(field)
-
     counter.increment
-    counter.periods.each { |key, period| counter.increment(period) }
   end
 
   def self.count(field, period = nil)

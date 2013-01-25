@@ -28,30 +28,24 @@ module Von
     end
 
     # Increment the Redis count for this Counter.
-    # If the field is a Period, we increment the Period.
-    #
-    # field - the Redis field containing the count
-    def increment(field = 'total')
-      if field.is_a?(Period)
-        increment_period(field)
-      else
-        Von.connection.hincrby(hash_key, field, 1)
-        increment_parents
-      end
+    def increment
+      Von.connection.hincrby(hash_key, 'total', 1)
+      increment_periods
+      increment_parents
     end
 
-    # Increment the Redis count for a Period
-    #
-    # period - The Period to increment
-    def increment_period(period)
-      Von.connection.hincrby(period.hash_key, period.field, 1)
-      unless Von.connection.lrange(period.list_key, 0, -1).include?(period.field)
-        Von.connection.rpush(period.list_key, period.field)
-      end
+    # Increment the Redis count for the associated Periods
+    def increment_periods
+      periods.each do |key, period|
+        Von.connection.hincrby(period.hash_key, period.field, 1)
+        unless Von.connection.lrange(period.list_key, 0, -1).include?(period.field)
+          Von.connection.rpush(period.list_key, period.field)
+        end
 
-      if Von.connection.llen(period.list_key) > period.length
-        expired_counter = Von.connection.lpop(period.list_key)
-        Von.connection.hdel(period.hash_key, expired_counter)
+        if Von.connection.llen(period.list_key) > period.length
+          expired_counter = Von.connection.lpop(period.list_key)
+          Von.connection.hdel(period.hash_key, expired_counter)
+        end
       end
     end
 

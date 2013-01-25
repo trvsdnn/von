@@ -4,7 +4,7 @@ module Von
 
     attr_reader :counter
     attr_reader :length
-    
+
     # Initialize a Period object
     #
     # counter - the field name for the counter
@@ -38,7 +38,7 @@ module Von
     def hours?
       @period == :hourly
     end
-    
+
     # Returns the String DateTime format
     def format
       @format ||= Von.config.send(:"#{@period}_format")
@@ -53,7 +53,7 @@ module Von
     def list_key
       @list ||= "#{Von.config.namespace}:lists:#{@counter}:#{@period}"
     end
-    
+
     # Returns the Redis field representation used for storing the count value
     def field
       @now.strftime(format)
