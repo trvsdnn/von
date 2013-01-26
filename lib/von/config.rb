@@ -11,8 +11,11 @@ module Von
     attr_accessor :daily_format
     attr_accessor :hourly_format
 
+    attr_reader  :periods
+
     def init!
       @counter_options = {}
+      @periods         = {}
       # all keys are prefixed with this namespace
       self.namespace = 'von'
       # 2013
@@ -34,15 +37,27 @@ module Von
         @redis = Redis.new(arg)
       end
     end
-
     def redis
-      @redis
+      @redis ||= Redis.new
     end
 
     def counter(field, options = {})
+      options.each do |key, value|
+        if Period::AVAILABLE_PERIODS.include?(key)
+          @periods[field.to_sym] ||= {}
+          @periods[field.to_sym][key.to_sym] = Period.new(field, key, value)
+          options.delete(key)
+        end
+      end
+
       @counter_options[field.to_sym] = options
     end
 
+    def period_defined_for?(key, period)
+      @periods.has_key?(key) && @periods[key].has_key?(period)
+    end
+
+    # TODO: rename
     def counter_options(field)
       @counter_options[field.to_sym] ||= {}
     end

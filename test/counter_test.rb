@@ -12,24 +12,24 @@ describe Von::Counter do
   end
 
   it "increments the total counter if given a single key" do
-    Counter.new('foo').increment
+    Counter.increment('foo')
 
     @store.has_key?('von:foo').must_equal true
     @store['von:foo']['total'].must_equal 1
 
-    Counter.new('foo').increment
+    Counter.increment('foo')
     @store['von:foo']['total'].must_equal 2
   end
 
   it "increments the total counter for a key and it's parent keys" do
-    Counter.new('foo:bar').increment
+    Counter.increment('foo:bar')
 
     @store.has_key?('von:foo').must_equal true
     @store['von:foo']['total'].must_equal 1
     @store.has_key?('von:foo:bar').must_equal true
     @store['von:foo:bar']['total'].must_equal 1
 
-    Counter.new('foo:bar').increment
+    Counter.increment('foo:bar')
     @store['von:foo']['total'].must_equal 2
     @store['von:foo:bar']['total'].must_equal 2
   end
@@ -39,8 +39,8 @@ describe Von::Counter do
       config.counter 'foo', :monthly => 1
     end
 
-    Counter.new('foo').increment
-    Counter.new('foo').increment
+    Counter.increment('foo')
+    Counter.increment('foo')
 
     @store.has_key?('von:foo').must_equal true
     @store.has_key?('von:foo:monthly').must_equal true
@@ -54,9 +54,9 @@ describe Von::Counter do
       config.counter 'foo', :monthly => 1
     end
 
-    Counter.new('foo').increment
+    Counter.increment('foo')
     Timecop.freeze(Time.local(2013, 02))
-    Counter.new('foo').increment
+    Counter.increment('foo')
 
     @store.has_key?('von:foo').must_equal true
     @store.has_key?('von:foo:monthly').must_equal true
@@ -66,9 +66,9 @@ describe Von::Counter do
   end
 
   it "gets a total count for a counter" do
-    Counter.new('foo').increment
-    Counter.new('foo').increment
-    Counter.new('foo').increment
+    Counter.increment('foo')
+    Counter.increment('foo')
+    Counter.increment('foo')
 
     Von.count('foo').must_equal 3
   end
@@ -79,9 +79,9 @@ describe Von::Counter do
     end
 
     Timecop.freeze(Time.local(2013, 02, 01, 05))
-    Counter.new('foo').increment
+    Counter.increment('foo')
     Timecop.freeze(Time.local(2013, 02, 01, 07))
-    Counter.new('foo').increment
+    Counter.increment('foo')
 
     Von.count('foo').must_equal 2
 

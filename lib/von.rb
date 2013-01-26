@@ -20,13 +20,11 @@ module Von
   end
 
   def self.increment(field)
-    counter = Counter.new(field)
-    counter.increment
+    Counter.increment(field)
   end
 
   def self.count(field, period = nil)
-    counter = Counter.new(field)
-    counter.count(period)
+    Counter.count(field, period)
   end
 
   config.init!

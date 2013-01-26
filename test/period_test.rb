@@ -8,8 +8,9 @@ describe Von::Period do
 
   it "intiializes given a counter, period, and length" do
     period = Period.new('foo', :monthly, 6)
-    period.counter.must_equal 'foo'
+    period.counter_key.must_equal 'foo'
     period.length.must_equal 6
+    period.format.must_equal '%Y-%m'
   end
 
   it "checks if the period is an hourly period" do
