@@ -30,6 +30,11 @@ module Von
       self.hourly_format  = '%Y-%m-%d %H:00'
     end
 
+    # Set the Redis connection to use
+    #
+    # arg - A Redis connection or a Hash of Redis connection options
+    #
+    # Returns the Redis client
     def redis=(arg)
       if arg.is_a? Redis
         @redis = arg
@@ -37,10 +42,14 @@ module Von
         @redis = Redis.new(arg)
       end
     end
+
+    # Returns the Redis connection
     def redis
       @redis ||= Redis.new
     end
 
+    # Configure options for given Counter. Configures length of given time period
+    # and any other options for the Counter
     def counter(field, options = {})
       options.each do |key, value|
         if Period::AVAILABLE_PERIODS.include?(key)
@@ -53,6 +62,9 @@ module Von
       @counter_options[field.to_sym] = options
     end
 
+    # Returns a True if a Period is defined for the
+    # given period identifier and the period has a length
+    # False if not
     def period_defined_for?(key, period)
       @periods.has_key?(key) && @periods[key].has_key?(period)
     end
