@@ -5,6 +5,7 @@ module Von
     extend self
 
     attr_accessor :namespace
+    attr_accessor :raise_connection_errors
     attr_accessor :yearly_format
     attr_accessor :monthly_format
     attr_accessor :weekly_format
@@ -18,6 +19,8 @@ module Von
       @periods         = {}
       # all keys are prefixed with this namespace
       self.namespace = 'von'
+      # rescue Redis connectinon errors
+      self.raise_connection_errors = false
       # 2013
       self.yearly_format  = '%Y'
       # 2013-01

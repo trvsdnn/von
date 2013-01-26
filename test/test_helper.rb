@@ -63,3 +63,11 @@ module Von
 
   end
 end
+
+module MiniTest::Expectations
+  def mock_connection!
+    connection = Von::TestConnection.new
+    @store     = connection.store
+    Von.expects(:connection).returns(connection).at_least_once
+  end
+end

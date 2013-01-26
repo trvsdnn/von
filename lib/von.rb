@@ -21,10 +21,14 @@ module Von
 
   def self.increment(field)
     Counter.increment(field)
+  rescue => e
+    raise e if config.raise_connection_errors
   end
 
   def self.count(field, period = nil)
     Counter.count(field, period)
+  rescue => e
+    raise e if config.raise_connection_errors
   end
 
   config.init!
