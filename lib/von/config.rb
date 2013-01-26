@@ -19,7 +19,7 @@ module Von
       @periods         = {}
       # all keys are prefixed with this namespace
       self.namespace = 'von'
-      # rescue Redis connectinon errors
+      # rescue Redis connection errors
       self.raise_connection_errors = false
       # 2013
       self.yearly_format  = '%Y'

@@ -65,6 +65,10 @@ Von.configure do |config|
     config.redis = Redis.current
     # Initialize a new Redis connection given options
     config.redis = { :host => 'localhost', :port => 6379 }
+    
+    # rescue Redis connection errors
+    # if the connection fails, no errors are raised by default
+    self.raise_connection_errors = false
 
     # set the top level Redis key namespace
     config.namespace = 'von'
