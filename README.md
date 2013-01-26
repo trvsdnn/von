@@ -55,6 +55,29 @@ Von.count('uploads', :monthly)  #=> [ { '2012-03 => 3}, { '2013-04' => 1 }, { '2
 
 One nice thing to note, if you're counting a time period and there wasn't a value stored for the particular hour/day/week/etc, it'll be populated with a zero, this ensures that if you want 30 days of stats, you get 30 days of stats.
 
+## Configuration
+
+There are a few things you might want to configure in Von, you can do this in the configure block where you would also set time periods and expirations.
+
+```ruby
+Von.configure do |config|
+    # set the Redis connection to an already existing connection
+    config.redis = Redis.current
+    # Initialize a new Redis connection given options
+    config.redis = { :host => 'localhost', :port => 6379 }
+
+    # set the top level Redis key namespace
+    config.namespace = 'von'
+
+    # set the various formatting for time periods (defaults shown)
+    config.yearly_format  = '%Y'
+    config.monthly_format = '%Y-%m'
+    config.weekly_format  = '%Y-%m-%d'
+    config.daily_format   = '%Y-%m-%d'
+    config.hourly_format  = '%Y-%m-%d %H:00'
+end
+```
+
 ## Installation
 
 Add this line to your application's Gemfile:
