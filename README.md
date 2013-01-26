@@ -68,7 +68,7 @@ Von.configure do |config|
     
     # rescue Redis connection errors
     # if the connection fails, no errors are raised by default
-    self.raise_connection_errors = false
+    config.raise_connection_errors = false
 
     # set the top level Redis key namespace
     config.namespace = 'von'
