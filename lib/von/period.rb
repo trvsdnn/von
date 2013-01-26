@@ -42,7 +42,7 @@ module Von
 
     # Returns the Redis hash key used for storing counts for this Period
     def hash_key
-      @hash ||= "#{Von.config.namespace}:#{@counter_key}:#{@period}"
+      @hash ||= "#{Von.config.namespace}:counters:#{@counter_key}:#{@period}"
     end
 
     # Returns the Redis list key used for storing current "active" counters

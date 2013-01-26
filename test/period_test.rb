@@ -42,7 +42,7 @@ describe Von::Period do
     period = :hourly
     period_obj = Period.new(field, period, 6)
 
-    period_obj.hash_key.must_equal "#{@config.namespace}:#{field}:#{period}"
+    period_obj.hash_key.must_equal "#{@config.namespace}:counters:#{field}:#{period}"
   end
 
   it "builds a redis list key string" do

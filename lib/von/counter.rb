@@ -16,8 +16,7 @@ module Von
 
     # Returns the Redis hash key used for storing counts for this Counter
     def hash_key
-      # TODO: prefix counter with counter
-      @hash_key ||= "#{Von.config.namespace}:#{@field}"
+      @hash_key ||= "#{Von.config.namespace}:counters:#{@field}"
     end
 
     # Increment the total count for this Counter
