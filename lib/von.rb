@@ -1,10 +1,11 @@
-require 'von/config'
-require 'von/counter'
-require 'von/period'
-require 'von/version'
-
 require 'redis'
 require 'active_support/time'
+
+require 'von/config'
+require 'von/counter'
+require 'von/model_counter'
+require 'von/period'
+require 'von/version'
 
 module Von
   def self.connection
