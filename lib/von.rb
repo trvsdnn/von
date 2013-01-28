@@ -3,7 +3,6 @@ require 'active_support/time'
 
 require 'von/config'
 require 'von/counter'
-require 'von/model_counter'
 require 'von/period'
 require 'von/version'
 
