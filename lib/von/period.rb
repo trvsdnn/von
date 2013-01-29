@@ -1,6 +1,6 @@
 module Von
   class Period
-    AVAILABLE_PERIODS = [ :hourly, :daily, :weekly, :monthly, :yearly ]
+    AVAILABLE_PERIODS = [ :minutely, :hourly, :daily, :weekly, :monthly, :yearly ]
 
     attr_reader :counter_key
     attr_reader :length
@@ -22,6 +22,8 @@ module Von
     # for the current period.
     def time_unit
       @time_unit ||= case @period
+      when :minutely
+        :minute
       when :hourly
         :hour
       when :daily
