@@ -1,6 +1,14 @@
 module Von
   class Period
     AVAILABLE_PERIODS = [ :minutely, :hourly, :daily, :weekly, :monthly, :yearly ]
+    TIME_UNITS = {
+      :minutely => :minute,
+      :hourly   => :hour,
+      :daily    => :day,
+      :weekly   => :week,
+      :monthly  => :month,
+      :yearly   => :year
+    }
 
     attr_reader :counter_key
     attr_reader :length
@@ -13,7 +21,7 @@ module Von
     # length - length of period
     def initialize(counter_key, period, length)
       @counter_key = counter_key
-      @period      = period
+      @period      = period.to_sym
       @length      = length
       @format      = Von.config.send(:"#{@period}_format")
     end
@@ -21,20 +29,7 @@ module Von
     # Returns a Symbol representing the time unit
     # for the current period.
     def time_unit
-      @time_unit ||= case @period
-      when :minutely
-        :minute
-      when :hourly
-        :hour
-      when :daily
-        :day
-      when :weekly
-        :week
-      when :monthly
-        :month
-      when :yearly
-        :year
-      end
+      @time_unit ||= TIME_UNITS[@period]
     end
 
     # Returns True or False if the period is hourly

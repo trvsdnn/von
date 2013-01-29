@@ -23,15 +23,15 @@ module Von
       # rescue Redis connection errors
       self.raise_connection_errors = false
       # 2013
-      self.yearly_format  = '%Y'
+      self.yearly_format   = '%Y'
       # 2013-01
-      self.monthly_format = '%Y-%m'
+      self.monthly_format  = '%Y-%m'
       # 2013-01-02
-      self.weekly_format  = '%Y-%m-%d'
+      self.weekly_format   = '%Y-%m-%d'
       # 2013-01-02
-      self.daily_format   = '%Y-%m-%d'
+      self.daily_format    = '%Y-%m-%d'
       # 2013-01-02 12:00
-      self.hourly_format  = '%Y-%m-%d %H:00'
+      self.hourly_format   = '%Y-%m-%d %H:00'
       # 2013-01-02 12:05
       self.minutely_format = '%Y-%m-%d %H:%M'
     end
