@@ -14,6 +14,7 @@ module Von
     attr_accessor :minutely_format
 
     attr_reader  :periods
+    attr_reader  :bests
 
     def init!
       @periods         = {}
@@ -58,10 +59,10 @@ module Von
     # Configure options for given Counter. Configures length of given time period
     # and any other options for the Counter
     def counter(field, options = {})
+      field = field.to_sym
       options.each do |option, value|
-        if Period::AVAILABLE_PERIODS.include?(option)
-          set_period(field, option, value)
-        end
+        set_period(field, option, value) if Period.exists?(option)
+        set_best(field, value) if option == :best
       end
     end
 
@@ -75,9 +76,12 @@ module Von
     private
 
     def set_period(field, period, length)
-      field = field.to_sym
       @periods[field] ||= {}
       @periods[field][period.to_sym] = Period.new(field, period, length)
+    end
+
+    def set_best(field, period)
+      @bests[field] = [ period ].flatten
     end
 
 

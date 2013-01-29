@@ -51,5 +51,9 @@ module Von
     def field
       Time.now.strftime(format)
     end
+
+    def self.exists?(period)
+      AVAILABLE_PERIODS.include?(period)
+    end
   end
 end
