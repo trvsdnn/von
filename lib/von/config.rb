@@ -11,6 +11,7 @@ module Von
     attr_accessor :weekly_format
     attr_accessor :daily_format
     attr_accessor :hourly_format
+    attr_accessor :minutely_format
 
     attr_reader  :periods
 
@@ -31,6 +32,8 @@ module Von
       self.daily_format   = '%Y-%m-%d'
       # 2013-01-02 12:00
       self.hourly_format  = '%Y-%m-%d %H:00'
+      # 2013-01-02 12:05
+      self.minutely_format = '%Y-%m-%d %H:%M'
     end
 
     # Set the Redis connection to use
