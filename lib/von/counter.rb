@@ -9,11 +9,6 @@ module Von
       @field = field.to_sym
     end
 
-    # Returns options specified in config for this Counter
-    def options
-      @options ||= Von.config.counter_options(@field)
-    end
-
     # Returns the Redis hash key used for storing counts for this Counter
     def hash_key
       @hash_key ||= "#{Von.config.namespace}:counters:#{@field}"

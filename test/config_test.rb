@@ -18,24 +18,14 @@ describe Von::Config do
     @config.namespace.must_equal 'something'
   end
 
-  it 'stores counter options per key and retrieves them' do
-    options = { :monthly => 3, :total => false }
-
-    @config.counter 'bar', options
-
-    @config.namespace.must_equal 'von'
-    @config.counter_options('bar').must_equal options
-  end
-
-  it "allows config options to be updated via configure" do
-    options = { :monthly => 3, :total => false }
-
+  it "allows periods to be set via counter method" do
     Von.configure do |config|
-      config.counter 'bar', options
+      config.counter 'bar', :monthly => 3, :daily => 6
     end
 
     Von.config.namespace.must_equal 'von'
-    Von.config.counter_options('bar').must_equal options
+    Von.config.periods[:bar].has_key?(:monthly).must_equal true
+    Von.config.periods[:bar][:monthly].length.must_equal 3
   end
 
 end

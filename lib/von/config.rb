@@ -16,8 +16,9 @@ module Von
     attr_reader  :periods
 
     def init!
-      @counter_options = {}
       @periods         = {}
+      @bests           = {}
+      @totals          = {}
       # all keys are prefixed with this namespace
       self.namespace = 'von'
       # rescue Redis connection errors
@@ -57,15 +58,11 @@ module Von
     # Configure options for given Counter. Configures length of given time period
     # and any other options for the Counter
     def counter(field, options = {})
-      options.each do |key, value|
-        if Period::AVAILABLE_PERIODS.include?(key)
-          @periods[field.to_sym] ||= {}
-          @periods[field.to_sym][key.to_sym] = Period.new(field, key, value)
-          options.delete(key)
+      options.each do |option, value|
+        if Period::AVAILABLE_PERIODS.include?(option)
+          set_period(field, option, value)
         end
       end
-
-      @counter_options[field.to_sym] = options
     end
 
     # Returns a True if a Period is defined for the
@@ -75,10 +72,14 @@ module Von
       @periods.has_key?(key) && @periods[key].has_key?(period)
     end
 
-    # TODO: rename
-    def counter_options(field)
-      @counter_options[field.to_sym] ||= {}
+    private
+
+    def set_period(field, period, length)
+      field = field.to_sym
+      @periods[field] ||= {}
+      @periods[field][period.to_sym] = Period.new(field, period, length)
     end
+
 
   end
 end
