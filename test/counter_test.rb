@@ -4,7 +4,7 @@ describe Von::Counter do
   Counter = Von::Counter
 
   before :each do
-    Timecop.freeze(Time.local(2013, 01))
+    Timecop.freeze(Time.local(2013, 01, 01, 01, 01))
     Von.config.init!
     mock_connection!
   end
@@ -45,6 +45,21 @@ describe Von::Counter do
     @store['von:counters:foo']['total'].must_equal 2
     @store['von:counters:foo:monthly']['2013-01'].must_equal 2
     @store['von:lists:foo:monthly'].size.must_equal 1
+  end
+
+  it 'increments a minute counter' do
+    Von.configure do |config|
+      config.counter 'foo', :minutely => 60
+    end
+
+    Counter.increment('foo')
+    Counter.increment('foo')
+
+    @store.has_key?('von:counters:foo').must_equal true
+    @store.has_key?('von:counters:foo:minutely').must_equal true
+    @store['von:counters:foo']['total'].must_equal 2
+    @store['von:counters:foo:minutely']['2013-01-01 01:01'].must_equal 2
+    @store['von:lists:foo:minutely'].size.must_equal 1
   end
 
   it "expires counters past the limit" do
