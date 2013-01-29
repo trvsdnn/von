@@ -33,8 +33,12 @@ describe Von::Config do
       config.counter 'foo', :best => [ :month, :year ]
     end
 
-    Von.config.bests[:bar].must_equal [ :day ]
-    Von.config.bests[:foo].must_equal [ :month, :year ]
+    Von.config.bests[:bar].first.must_be_instance_of Von::Period
+    Von.config.bests[:bar].first.period.must_equal :daily
+    Von.config.bests[:foo].first.must_be_instance_of Von::Period
+    Von.config.bests[:foo].first.period.must_equal :monthly
+    Von.config.bests[:foo].last.must_be_instance_of Von::Period
+    Von.config.bests[:foo].last.period.must_equal :yearly
   end
 
 end

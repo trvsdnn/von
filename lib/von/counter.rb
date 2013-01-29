@@ -2,6 +2,8 @@ module Von
   class Counter
     PARENT_REGEX = /:?[^:]+\z/
 
+    attr_reader :field
+
     # Initialize a new Counter
     #
     # field - counter field name
@@ -28,9 +30,9 @@ module Von
 
     # Increment periods associated with this key
     def increment_periods
-      return unless Von.config.periods.has_key?(@field.to_sym)
+      return unless Von.config.periods.has_key?(@field)
 
-      Von.config.periods[@field.to_sym].each do |key, period|
+      Von.config.periods[@field].each do |key, period|
         Von.connection.hincrby(period.hash_key, period.field, 1)
         unless Von.connection.lrange(period.list_key, 0, -1).include?(period.field)
           Von.connection.rpush(period.list_key, period.field)
@@ -63,7 +65,8 @@ module Von
     #
     # Returns an Integer count
     def count
-      Von.connection.hget(hash_key, 'total')
+      count = Von.connection.hget(hash_key, 'total')
+      count.nil? ? 0 : count.to_i
     end
 
     # Count the fields for the given time period for this Counter.
@@ -83,7 +86,7 @@ module Von
       end
 
       keys = Von.connection.hgetall("#{hash_key}:#{period}")
-      _counts.map { |date| { date => keys.fetch(date, 0) }}
+      _counts.map { |date| { date => keys.fetch(date, 0).to_i }}
     end
 
     # Lookup the count for this Counter in Redis.

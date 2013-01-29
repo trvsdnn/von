@@ -7,8 +7,9 @@ describe Von do
   end
 
   it "increments a counter and counts it" do
-    mock_connection!
-
+    @redis = Redis.new
+    @redis.flushall
+    
     Von.increment('foo')
     Von.increment('foo')
     Von.count('foo').must_equal 2
