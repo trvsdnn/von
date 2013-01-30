@@ -1,7 +1,5 @@
 module Von
   class Counter
-    PARENT_REGEX = /:?[^:]+\z/
-
     attr_reader :field
 
     # Initialize a new Counter
@@ -13,7 +11,7 @@ module Von
 
     # Returns the Redis hash key used for storing counts for this Counter
     def hash_key
-      @hash_key ||= "#{Von.config.namespace}:counters:#{@field}"
+      "#{Von.config.namespace}:counters:#{@field}"
     end
 
     # Increment the total count for this Counter
@@ -21,46 +19,7 @@ module Von
     #
     # Returns the Integer total for the key
     def increment
-      total = Von.connection.hincrby(hash_key, 'total', 1)
-
-      BestCounter.new(self).increment
-      
-      increment_periods
-
-      total
-    end
-
-    # Increment periods associated with this key
-    def increment_periods
-      return unless Von.config.periods.has_key?(@field)
-
-      Von.config.periods[@field].each do |key, period|
-        Von.connection.hincrby(period.hash_key, period.field, 1)
-        unless Von.connection.lrange(period.list_key, 0, -1).include?(period.field)
-          Von.connection.rpush(period.list_key, period.field)
-        end
-
-        if Von.connection.llen(period.list_key) > period.length
-          expired_counter = Von.connection.lpop(period.list_key)
-          Von.connection.hdel(period.hash_key, expired_counter)
-        end
-      end
-    end
-
-    # Increment the Redis count for this Counter.
-    # If the key has parents, increment them as well.
-    #
-    # Returns the Integer total for the key
-    def self.increment(field)
-      total   = Counter.new(field).increment
-      parents = field.sub(PARENT_REGEX, '')
-
-      until parents.empty? do
-        Counter.new(parents).increment
-        parents.sub!(PARENT_REGEX, '')
-      end
-
-      total
+      Von.connection.hincrby(hash_key, 'total', 1).to_i
     end
 
     # Count the "total" field for this Counter.
@@ -71,26 +30,6 @@ module Von
       count.nil? ? 0 : count.to_i
     end
 
-    # Count the fields for the given time period for this Counter.
-    #
-    # Returns an Array of Hashes representing the count
-    def count_period(period)
-      return unless Von.config.period_defined_for?(@field, period)
-
-      _counts   = []
-      _period   = Von.config.periods[@field][period]
-      now       = DateTime.now.beginning_of_hour
-
-      _period.length.times do
-        this_period = now.strftime(_period.format)
-        _counts.unshift(this_period)
-        now = _period.hours? ? now.ago(3600) : now.send(:"prev_#{_period.time_unit}")
-      end
-
-      keys = Von.connection.hgetall("#{hash_key}:#{period}")
-      _counts.map { |date| { date => keys.fetch(date, 0).to_i }}
-    end
-
     # Lookup the count for this Counter in Redis.
     # If a Period argument is given we lookup the count for
     # all of the possible units (not expired), zeroing ones that
@@ -99,14 +38,8 @@ module Von
     # period - A Period to lookup
     #
     # Returns an Integer representing the count or an Array of counts.
-    def self.count(field, period = nil)
-      counter = Counter.new(field)
-
-      if period.nil?
-        counter.count
-      else
-        counter.count_period(period.to_sym)
-      end
+    def self.count(field)
+      Counter.new(field).count
     end
 
   end
