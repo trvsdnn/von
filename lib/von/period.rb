@@ -32,6 +32,7 @@ module Von
       @format = Von.config.send(:"#{@period}_format")
     end
 
+    # TODO: take this out, dirty
     def to_s
       @period.to_s
     end
