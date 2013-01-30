@@ -1,7 +1,6 @@
 module Von
   class Period
-    AVAILABLE_PERIODS = [ :minutely, :hourly, :daily, :weekly, :monthly, :yearly ]
-    TIME_UNITS = {
+    PERIOD_MAPPING = {
       :minutely => :minute,
       :hourly   => :hour,
       :daily    => :day,
@@ -9,25 +8,30 @@ module Von
       :monthly  => :month,
       :yearly   => :year
     }
-    TIME_PERIODS = TIME_UNITS.invert
-    
+    AVAILABLE_PERIODS    = PERIOD_MAPPING.keys
+    AVAILABLE_TIME_UNITS = PERIOD_MAPPING.values
+
     attr_reader :period
-    attr_reader :counter_key
     attr_reader :length
     attr_reader :format
 
     # Initialize a Period object
     #
-    # counter - the field name for the counter
     # period - the time period one of AVAILABLE_PERIODS
     # length - length of period
-    def initialize(counter_key, period, length = nil)
-      @counter_key = counter_key
-      @period      = period.to_sym
-      @length      = length
-      @format      = Von.config.send(:"#{@period}_format")
+    def initialize(period, length = nil)
+      period = period.to_sym
+      if AVAILABLE_PERIODS.include?(period)
+        @period = period
+      elsif AVAILABLE_TIME_UNITS.include?(period)
+        @period = PERIOD_MAPPING.invert[period]
+      else
+        raise ArgumentError, "`#{period}' is not a valid period"
+      end
+      @length = length
+      @format = Von.config.send(:"#{@period}_format")
     end
-    
+
     def to_s
       @period.to_s
     end
@@ -35,7 +39,7 @@ module Von
     # Returns a Symbol representing the time unit
     # for the current period.
     def time_unit
-      @time_unit ||= TIME_UNITS[@period]
+      @time_unit ||= PERIOD_MAPPING[@period]
     end
 
     # Returns True or False if the period is hourly
@@ -43,31 +47,26 @@ module Von
       @period == :hourly
     end
 
-    def now
-      # TODO: this may break minutes
-      DateTime.now.beginning_of_hour
+    # Returns True or False if the period is minutely
+    def minutes?
+      @period == :minutely
+    end
+
+    def beginning(time)
+      if minutes?
+        time.change(:seconds => 0)
+      else
+        time.send(:"beginning_of_#{time_unit}")
+      end
     end
 
     def prev
-      hours? ? now.ago(3600) : now.send(:"prev_#{_period.time_unit}")
+      beginning(1.send(time_unit.to_sym).ago).strftime(@format)
     end
 
-    # Returns the Redis hash key used for storing counts for this Period
-    def hash_key
-      @hash ||= "#{Von.config.namespace}:counters:#{@counter_key}:#{@period}"
+    def timestamp
+      beginning(Time.now).strftime(format)
     end
-
-    # Returns the Redis list key used for storing current "active" counters
-    def list_key
-      @list ||= "#{Von.config.namespace}:lists:#{@counter_key}:#{@period}"
-    end
-
-    # Returns the Redis field representation used for storing the count value
-    # TODO: rename this
-    def field
-      Time.now.strftime(format)
-    end
-    alias :timestamp :field
 
     def self.exists?(period)
       AVAILABLE_PERIODS.include?(period)

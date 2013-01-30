@@ -1,69 +1,113 @@
+require 'test_helper'
+
 describe Von::Period do
   Period = Von::Period
 
   before :each do
     @config = Von::Config
     @config.init!
+    Timecop.freeze(Time.local(2013, 01, 02, 03, 04))
   end
 
-  it "intiializes given a counter, period, and length" do
-    period = Period.new('foo', :monthly, 6)
-    period.counter_key.must_equal 'foo'
-    period.length.must_equal 6
+  it "intiializes given a period" do
+    period = Period.new(:monthly)
+    period.to_s.must_equal 'monthly'
+    period.length.must_be_nil
     period.format.must_equal '%Y-%m'
   end
 
+  it "intiializes given a time unit" do
+    period = Period.new(:month)
+    period.to_s.must_equal 'monthly'
+    period.length.must_be_nil
+    period.format.must_equal '%Y-%m'
+  end
+
+  it "intiializes given a period and length" do
+    period = Period.new(:monthly, 3)
+    period.to_s.must_equal 'monthly'
+    period.length.must_equal 3
+    period.format.must_equal '%Y-%m'
+  end
+
+  it "generates a timestamp for now" do
+    Period.new(:minutely).timestamp.must_equal '2013-01-02 03:04'
+    Period.new(:hourly).timestamp.must_equal '2013-01-02 03:00'
+    Period.new(:daily).timestamp.must_equal '2013-01-02'
+    Period.new(:weekly).timestamp.must_equal '2012-12-31'
+    Period.new(:monthly).timestamp.must_equal '2013-01'
+    Period.new(:yearly).timestamp.must_equal '2013'
+  end
+
+  it "knows the prev time period" do
+    Period.new(:minutely).prev.must_equal '2013-01-02 03:03'
+    Period.new(:hourly).prev.must_equal '2013-01-02 02:00'
+    Period.new(:daily).prev.must_equal '2013-01-01'
+    Period.new(:weekly).prev.must_equal '2012-12-24'
+    Period.new(:monthly).prev.must_equal '2012-12'
+    Period.new(:yearly).prev.must_equal '2012'
+  end
+
   it "checks if the period is an hourly period" do
-    Period.new('foo', :minutely, 6).wont_be :hours?
-    Period.new('foo', :hourly, 6).must_be :hours?
-    Period.new('foo', :daily, 6).wont_be :hours?
-    Period.new('foo', :weekly, 6).wont_be :hours?
-    Period.new('foo', :monthly, 6).wont_be :hours?
-    Period.new('foo', :yearly, 6).wont_be :hours?
+    Period.new(:minutely).wont_be :hours?
+    Period.new(:hourly).must_be :hours?
+    Period.new(:daily).wont_be :hours?
+    Period.new(:weekly).wont_be :hours?
+    Period.new(:monthly).wont_be :hours?
+    Period.new(:yearly).wont_be :hours?
+  end
+
+  it "checks if the period is an hourly period" do
+    Period.new(:minutely).must_be :minutes?
+    Period.new(:hourly).wont_be :minutes?
+    Period.new(:daily).wont_be :minutes?
+    Period.new(:weekly).wont_be :minutes?
+    Period.new(:monthly).wont_be :minutes?
+    Period.new(:yearly).wont_be :minutes?
   end
 
   it "knows what time unit it is" do
-    Period.new('foo', :minutely, 6).time_unit.must_equal :minute
-    Period.new('foo', :hourly, 6).time_unit.must_equal :hour
-    Period.new('foo', :daily, 6).time_unit.must_equal :day
-    Period.new('foo', :weekly, 6).time_unit.must_equal :week
-    Period.new('foo', :monthly, 6).time_unit.must_equal :month
-    Period.new('foo', :yearly, 6).time_unit.must_equal :year
+    Period.new(:minutely).time_unit.must_equal :minute
+    Period.new(:hourly).time_unit.must_equal :hour
+    Period.new(:daily).time_unit.must_equal :day
+    Period.new(:weekly).time_unit.must_equal :week
+    Period.new(:monthly).time_unit.must_equal :month
+    Period.new(:yearly).time_unit.must_equal :year
   end
 
-  it "pulls a time format from config options" do
-    Period.new('foo', :minutely, 6).format.must_equal Von.config.minutely_format
-    Period.new('foo', :hourly, 6).format.must_equal Von.config.hourly_format
-    Period.new('foo', :daily, 6).format.must_equal Von.config.daily_format
-    Period.new('foo', :weekly, 6).format.must_equal Von.config.weekly_format
-    Period.new('foo', :monthly, 6).format.must_equal Von.config.monthly_format
-    Period.new('foo', :yearly, 6).format.must_equal Von.config.yearly_format
+  it "gets a time format from config" do
+    Period.new(:minutely).format.must_equal Von.config.minutely_format
+    Period.new(:hourly).format.must_equal Von.config.hourly_format
+    Period.new(:daily).format.must_equal Von.config.daily_format
+    Period.new(:weekly).format.must_equal Von.config.weekly_format
+    Period.new(:monthly).format.must_equal Von.config.monthly_format
+    Period.new(:yearly).format.must_equal Von.config.yearly_format
   end
 
-  it "builds a redis hash key string" do
-    field  = 'foo'
-    period = :hourly
-    period_obj = Period.new(field, period, 6)
-
-    period_obj.hash_key.must_equal "#{@config.namespace}:counters:#{field}:#{period}"
-  end
-
-  it "builds a redis list key string" do
-    field  = 'foo'
-    period = :hourly
-    period_obj = Period.new(field, period, 6)
-
-    period_obj.list_key.must_equal "#{@config.namespace}:lists:#{field}:#{period}"
-  end
-
-  it "builds a redis field for the given period and current time" do
-    Timecop.freeze(Time.local(2013, 02, 01, 05, 15))
-    Period.new('foo', :minutely, 6).field.must_equal '2013-02-01 05:15'
-    Period.new('foo', :hourly, 6).field.must_equal '2013-02-01 05:00'
-    Period.new('foo', :daily, 6).field.must_equal '2013-02-01'
-    Period.new('foo', :weekly, 6).field.must_equal '2013-02-01'
-    Period.new('foo', :monthly, 6).field.must_equal '2013-02'
-    Period.new('foo', :yearly, 6).field.must_equal '2013'
-  end
+  # it "builds a redis hash key string" do
+  #   field  = 'foo'
+  #   period = :hourly
+  #   period_obj = Period.new(field, period, 6)
+  # 
+  #   period_obj.hash_key.must_equal "#{@config.namespace}:counters:#{field}:#{period}"
+  # end
+  # 
+  # it "builds a redis list key string" do
+  #   field  = 'foo'
+  #   period = :hourly
+  #   period_obj = Period.new(field, period, 6)
+  # 
+  #   period_obj.list_key.must_equal "#{@config.namespace}:lists:#{field}:#{period}"
+  # end
+  # 
+  # it "builds a redis field for the given period and current time" do
+  #   Timecop.freeze(Time.local(2013, 02, 01, 05, 15))
+  #   Period.new('foo', :minutely, 6).field.must_equal '2013-02-01 05:15'
+  #   Period.new('foo', :hourly, 6).field.must_equal '2013-02-01 05:00'
+  #   Period.new('foo', :daily, 6).field.must_equal '2013-02-01'
+  #   Period.new('foo', :weekly, 6).field.must_equal '2013-01-28'
+  #   Period.new('foo', :monthly, 6).field.must_equal '2013-02'
+  #   Period.new('foo', :yearly, 6).field.must_equal '2013'
+  # end
 
 end
