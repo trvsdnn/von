@@ -1,7 +1,7 @@
 require 'test_helper'
 
-describe Von::PeriodCounter do
-  PeriodCounter = Von::PeriodCounter
+describe Von::Counters::Period do
+  PeriodCounter = Von::Counters::Period
 
   before :each do
     Timecop.freeze(Time.local(2013, 01, 01, 01, 01))

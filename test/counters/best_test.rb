@@ -1,7 +1,7 @@
 require 'test_helper'
 
-describe Von::BestCounter do
-  BestCounter = Von::BestCounter
+describe Von::Counters::Best do
+  BestCounter = Von::Counters::Best
 
   before :each do
     Timecop.freeze(Time.local(2013, 01, 01, 06))

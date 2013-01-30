@@ -1,7 +1,7 @@
 require 'test_helper'
 
-describe Von::Counter do
-  Counter = Von::Counter
+describe Von::Counters::Total do
+  Counter = Von::Counters::Total
 
   before :each do
     Timecop.freeze(Time.local(2013, 01, 01, 01, 01))

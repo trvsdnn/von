@@ -1,0 +1,61 @@
+module Von
+  module Counters
+    class Period
+
+      def initialize(field, periods = nil)
+        @field   = field.to_sym
+        @periods = periods || []
+      end
+
+      # Returns the Redis hash key used for storing counts for this Period
+      def hash_key(period)
+        "#{Von.config.namespace}:counters:#{@field}:#{period}"
+      end
+
+      # Returns the Redis list key used for storing current "active" counters
+      def list_key(period)
+        "#{Von.config.namespace}:lists:#{@field}:#{period}"
+      end
+
+      def increment
+        return if @periods.empty?
+
+        @periods.each do |period|
+          _hash_key = hash_key(period)
+          _list_key = list_key(period)
+
+          Von.connection.hincrby(_hash_key, period.timestamp, 1)
+
+          unless Von.connection.lrange(_list_key, 0, -1).include?(period.timestamp)
+            Von.connection.rpush(_list_key, period.timestamp)
+          end
+
+          if Von.connection.llen(_list_key) > period.length
+            expired_counter = Von.connection.lpop(_list_key)
+            Von.connection.hdel(_hash_key, expired_counter)
+          end
+        end
+      end
+
+      # Count the fields for the given time period for this Counter.
+      #
+      # Returns an Array of Hashes representing the count
+      def count(period)
+        return if @periods.empty?
+
+        counts     = []
+        this_period = nil
+        _period     = @periods.select { |p| p.period == period }.first
+
+        _period.length.times do |i|
+          this_period = _period.prev(i)
+          counts.unshift(this_period)
+        end
+
+        keys = Von.connection.hgetall(hash_key(period))
+        counts.map { |date| { date => keys.fetch(date, 0).to_i }}
+      end
+
+    end
+  end
+end
