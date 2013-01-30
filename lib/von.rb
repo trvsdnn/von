@@ -2,9 +2,10 @@ require 'redis'
 require 'active_support/time'
 
 require 'von/config'
+require 'von/period'
 require 'von/counter'
 require 'von/best_counter'
-require 'von/period'
+require 'von/period_counter'
 require 'von/version'
 
 module Von

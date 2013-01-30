@@ -60,8 +60,8 @@ module Von
       end
     end
 
-    def prev
-      beginning(1.send(time_unit.to_sym).ago).strftime(@format)
+    def prev(unit = 1)
+      beginning(unit.send(time_unit.to_sym).ago).strftime(@format)
     end
 
     def timestamp
