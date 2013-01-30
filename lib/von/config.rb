@@ -80,8 +80,10 @@ module Von
       @periods[field][period.to_sym] = Period.new(field, period, length)
     end
 
-    def set_best(field, period)
-      @bests[field] = [ period ].flatten
+    def set_best(field, time_unit)
+      @bests[field] = [ time_unit ].flatten.map { |u|
+        Period.new(field, Period::TIME_PERIODS[u])
+      }
     end
 
 
