@@ -68,6 +68,10 @@ module Von
     def timestamp
       beginning(Time.now).strftime(format)
     end
+    
+    def self.unit_to_period(time_unit)
+      PERIOD_MAPPING.invert[time_unit]
+    end
 
     def self.exists?(period)
       AVAILABLE_PERIODS.include?(period)

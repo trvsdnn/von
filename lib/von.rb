@@ -3,6 +3,7 @@ require 'active_support/time'
 
 require 'von/config'
 require 'von/period'
+require 'von/counter'
 require 'von/counters/total'
 require 'von/counters/period'
 require 'von/counters/best'
@@ -44,7 +45,9 @@ module Von
     if config.periods_defined_for_counter?(counter)
       periods = config.periods[counter.field]
       Counters::Period.new(counter.field, periods).increment
-    elsif config.bests_defined_for_counter?(counter)
+    end
+
+    if config.bests_defined_for_counter?(counter)
       periods = config.bests[counter.field]
       Counters::Best.new(counter.field, periods).increment
     end
@@ -52,13 +55,8 @@ module Von
     total
   end
 
-  def self.count(field, period = nil)
-    if period.nil?
-      Counters::Total.new(field).count
-    else
-      periods = config.periods[field.to_sym]
-      Counters::Period.new(field, periods).count(period)
-    end
+  def self.count(field)
+    Counter.new(field)
   rescue Redis::BaseError => e
     raise e if config.raise_connection_errors
   end

@@ -51,10 +51,15 @@ module Von
       end
 
       def count(period)
-        if current_timestamp > best_timestamp
-          { current_timestamp => current_total }
+        _current_timestamp = current_timestamp(period)
+        _current_total     = current_total(period)
+        _best_timestamp    = best_timestamp(period)
+        _best_total        = best_total(period)
+
+        if _current_total > _best_total
+          { _current_timestamp => _current_total }
         else
-          { best_timestamp => best_total }
+          { _best_timestamp => _best_total }
         end
       end
 

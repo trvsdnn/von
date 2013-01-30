@@ -68,6 +68,7 @@ module Von
 
     # Returns a True if a period is defined for the
     # given Counter
+    # TODO: these should just take the key, will fix when renaming field
     def periods_defined_for_counter?(counter)
       @periods.has_key?(counter.field)
     end

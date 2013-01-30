@@ -11,27 +11,29 @@ describe Von do
 
   it "increments a counter and counts it" do
     3.times { Von.increment('foo') }
-    Von.count('foo').must_equal 3
+    Von.count('foo').total.must_equal 3
   end
-
+  
   it "increments a counter and parent counters and counts them" do
     3.times { Von.increment('foo:bar') }
-    Von.count('foo').must_equal 3
-    Von.count('foo:bar').must_equal 3
+    Von.count('foo').total.must_equal 3
+    Von.count('foo:bar').total.must_equal 3
   end
 
-  it "increments period counters and counts them" do
+  it "increments period/best counters and counts them" do
     Von.configure do |config|
-      config.counter 'foo', :monthly => 2
+      config.counter 'foo', :monthly => 2, :best => :day
     end
 
     Von.increment('foo')
-    Timecop.freeze(Time.local(2013, 02))
+    Timecop.freeze(Time.local(2013, 02, 03))
     Von.increment('foo')
-    Timecop.freeze(Time.local(2013, 03))
+    Von.increment('foo')
+    Timecop.freeze(Time.local(2013, 03, 04))
     Von.increment('foo')
 
-    Von.count('foo', :monthly).must_equal [{"2013-02"=>1}, {"2013-03"=>1}]
+    Von.count('foo').best(:day).must_equal({ "2013-02-03" => 2 })
+    Von.count('foo').per(:month).must_equal [{ "2013-02" => 2 }, { "2013-03" => 1 }]
   end
 
   it "raises a Redis connection errors if raise_connection_errors is true" do
