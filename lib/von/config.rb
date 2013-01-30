@@ -77,12 +77,12 @@ module Von
 
     def set_period(field, period, length)
       @periods[field] ||= {}
-      @periods[field][period.to_sym] = Period.new(field, period, length)
+      @periods[field][period.to_sym] = Period.new(period, length)
     end
 
     def set_best(field, time_unit)
       @bests[field] = [ time_unit ].flatten.map { |u|
-        Period.new(field, Period::TIME_PERIODS[u])
+        Period.new(u)
       }
     end
 
