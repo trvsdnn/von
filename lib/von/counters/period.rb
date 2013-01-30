@@ -1,6 +1,7 @@
 module Von
   module Counters
     class Period
+      include Von::Counters::Commands
 
       def initialize(field, periods = nil)
         @field   = field.to_sym
@@ -24,15 +25,15 @@ module Von
           _hash_key = hash_key(period)
           _list_key = list_key(period)
 
-          Von.connection.hincrby(_hash_key, period.timestamp, 1)
+          hincrby(_hash_key, period.timestamp, 1)
 
-          unless Von.connection.lrange(_list_key, 0, -1).include?(period.timestamp)
-            Von.connection.rpush(_list_key, period.timestamp)
+          unless lrange(_list_key, 0, -1).include?(period.timestamp)
+            rpush(_list_key, period.timestamp)
           end
 
-          if Von.connection.llen(_list_key) > period.length
-            expired_counter = Von.connection.lpop(_list_key)
-            Von.connection.hdel(_hash_key, expired_counter)
+          if llen(_list_key) > period.length
+            expired_counter = lpop(_list_key)
+            hdel(_hash_key, expired_counter)
           end
         end
       end
@@ -52,7 +53,7 @@ module Von
           counts.unshift(this_period)
         end
 
-        keys = Von.connection.hgetall(hash_key(period))
+        keys = hgetall(hash_key(period))
         counts.map { |date| { date => keys.fetch(date, 0).to_i }}
       end
 

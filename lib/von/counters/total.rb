@@ -1,6 +1,7 @@
 module Von
   module Counters
     class Total
+      include Von::Counters::Commands
       attr_reader :field
 
       # Initialize a new Counter
@@ -20,14 +21,14 @@ module Von
       #
       # Returns the Integer total for the key
       def increment
-        Von.connection.hincrby(hash_key, 'total', 1).to_i
+        hincrby(hash_key, 'total', 1).to_i
       end
 
       # Count the "total" field for this Counter.
       #
       # Returns an Integer count
       def count
-        count = Von.connection.hget(hash_key, 'total')
+        count = hget(hash_key, 'total')
         count.nil? ? 0 : count.to_i
       end
 

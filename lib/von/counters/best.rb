@@ -1,6 +1,7 @@
 module Von
   module Counters
     class Best
+      include Von::Counters::Commands
 
       def initialize(field, periods = nil)
         @field   = field.to_sym
@@ -12,19 +13,19 @@ module Von
       end
 
       def best_total(period)
-        Von.connection.hget("#{hash_key}:#{period}:best", 'total').to_i
+        hget("#{hash_key}:#{period}:best", 'total').to_i
       end
 
       def best_timestamp(period)
-        Von.connection.hget("#{hash_key}:#{period}:best", 'timestamp')
+        hget("#{hash_key}:#{period}:best", 'timestamp')
       end
 
       def current_total(period)
-        Von.connection.hget("#{hash_key}:#{period}:current", 'total').to_i
+        hget("#{hash_key}:#{period}:current", 'total').to_i
       end
 
       def current_timestamp(period)
-        Von.connection.hget("#{hash_key}:#{period}:current", 'timestamp')
+        hget("#{hash_key}:#{period}:current", 'timestamp')
       end
 
       def increment
@@ -37,15 +38,15 @@ module Von
 
           if period.timestamp != _current_timestamp
             # changing current period
-            Von.connection.hset("#{hash_key}:#{period}:current", 'total', 1)
-            Von.connection.hset("#{hash_key}:#{period}:current", 'timestamp', period.timestamp)
+            hset("#{hash_key}:#{period}:current", 'total', 1)
+            hset("#{hash_key}:#{period}:current", 'timestamp', period.timestamp)
 
             if best_total(period) < _current_total
-              Von.connection.hset("#{hash_key}:#{period}:best", 'total', _current_total)
-              Von.connection.hset("#{hash_key}:#{period}:best", 'timestamp', _current_timestamp)
+              hset("#{hash_key}:#{period}:best", 'total', _current_total)
+              hset("#{hash_key}:#{period}:best", 'timestamp', _current_timestamp)
             end
           else
-            Von.connection.hincrby("#{hash_key}:#{period}:current", 'total', 1)
+            hincrby("#{hash_key}:#{period}:current", 'total', 1)
           end
         end
       end
