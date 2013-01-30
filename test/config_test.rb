@@ -23,8 +23,11 @@ describe Von::Config do
       config.counter 'bar', :monthly => 3, :daily => 6
     end
 
-    Von.config.periods[:bar].has_key?(:monthly).must_equal true
-    Von.config.periods[:bar][:monthly].length.must_equal 3
+    Von.config.periods[:bar].length.must_equal 2
+    Von.config.periods[:bar].first.period.must_equal :monthly
+    Von.config.periods[:bar].first.length.must_equal 3
+    Von.config.periods[:bar].last.period.must_equal :daily
+    Von.config.periods[:bar].last.length.must_equal 6
   end
 
   it "allows bests to be set via counter method" do

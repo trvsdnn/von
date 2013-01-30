@@ -66,18 +66,23 @@ module Von
       end
     end
 
-    # Returns a True if a Period is defined for the
-    # given period identifier and the period has a length
-    # False if not
-    def period_defined_for?(key, period)
-      @periods.has_key?(key) && @periods[key].has_key?(period)
+    # Returns a True if a period is defined for the
+    # given Counter
+    def periods_defined_for_counter?(counter)
+      @periods.has_key?(counter.field)
+    end
+
+    # Returns a True if a best is defined for the
+    # given counter
+    def bests_defined_for_counter?(counter)
+      @bests.has_key?(counter.field)
     end
 
     private
 
     def set_period(field, period, length)
-      @periods[field] ||= {}
-      @periods[field][period.to_sym] = Period.new(period, length)
+      @periods[field] ||= []
+      @periods[field] << Period.new(period, length)
     end
 
     def set_best(field, time_unit)
