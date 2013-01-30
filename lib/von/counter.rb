@@ -23,6 +23,8 @@ module Von
     def increment
       total = Von.connection.hincrby(hash_key, 'total', 1)
 
+      BestCounter.new(self).increment
+      
       increment_periods
 
       total
