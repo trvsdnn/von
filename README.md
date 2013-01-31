@@ -19,7 +19,7 @@ Von.increment('downloads')          # bumps the 'downloads' key 1 time
 Von.increment('downloads:app123')   # bumps the 'downloads:app123' key 1 time AND the 'downloads' key 1 time
 ```
 
-## Time Period Grouping and Limiting
+## Tracking Time Periods
 
 By default Von will only bump a "total" counter for the given key. This is great, but what makes Von really useful is that it can be configured to group certain keys by hour, day, week, month, and year. And you can set limits on how many of each you want to keep around. Here's how it works:
 
@@ -34,22 +34,39 @@ Von.configure do |config|
 end
 ```
 
-### Incrementing Time Periods
+## Tracking "Bests"
 
-Once you've configured the keys you want to use Time Periods on, you just increment them like normal, Von handles the rest.
+Time periods are pretty cool, but sometimes you wanna know when you did your best. You can track these with Von as well:
+
+```ruby
+Von.configure do |config|
+    # Track the best day for downloads
+    config.counter 'downloads', :best => :day
+
+    # Track the best hour and week for page-views
+    config.counter 'page-views', :best => [ :hour, :week ]
+end
+```
+
+### Incrementing
+
+Once you've configured the keys you don't have to do anything special, just increment the key, Von will handle this rest.
 
 ```ruby
 Von.increment('downloads')
 Von.increment('uploads')
+Von.increment('page-views')
 ```
 
 ## Getting Stats
 
 ```ruby
 # get the total downloads (returns an Integer)
-Von.count('downloads')  #=> 4
+Von.count('downloads')             #=> 4
 # get the monthly counts (returns an Array of Hashes)
-Von.count('uploads', :monthly)  #=> [ { '2012-03 => 3}, { '2013-04' => 1 }, { '2013-05' => 0 }]
+Von.count('uploads').per(:month)   #=> [ { '2012-03' => 3 }, { '2013-04' => 1 }, { '2013-05' => 0 }]
+# get the best day for downloads (returns a Hash)
+Von.count('downloads').best(:day)  #=> { '2012-03-01' => 10 }
 
 ```
 
