@@ -46,7 +46,7 @@ module Von
 
         counts     = []
         this_period = nil
-        _period     = @periods.select { |p| p.period == period }.first
+        _period     = @periods.select { |p| p.name == period }.first
 
         _period.length.times do |i|
           this_period = _period.prev(i)

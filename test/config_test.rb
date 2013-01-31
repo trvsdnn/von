@@ -24,9 +24,9 @@ describe Von::Config do
     end
 
     Von.config.periods[:bar].length.must_equal 2
-    Von.config.periods[:bar].first.period.must_equal :monthly
+    Von.config.periods[:bar].first.name.must_equal :monthly
     Von.config.periods[:bar].first.length.must_equal 3
-    Von.config.periods[:bar].last.period.must_equal :daily
+    Von.config.periods[:bar].last.name.must_equal :daily
     Von.config.periods[:bar].last.length.must_equal 6
   end
 
@@ -37,11 +37,11 @@ describe Von::Config do
     end
 
     Von.config.bests[:bar].first.must_be_instance_of Von::Period
-    Von.config.bests[:bar].first.period.must_equal :daily
+    Von.config.bests[:bar].first.name.must_equal :daily
     Von.config.bests[:foo].first.must_be_instance_of Von::Period
-    Von.config.bests[:foo].first.period.must_equal :monthly
+    Von.config.bests[:foo].first.name.must_equal :monthly
     Von.config.bests[:foo].last.must_be_instance_of Von::Period
-    Von.config.bests[:foo].last.period.must_equal :yearly
+    Von.config.bests[:foo].last.name.must_equal :yearly
   end
 
 end

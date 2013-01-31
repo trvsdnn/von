@@ -11,7 +11,7 @@ module Von
     AVAILABLE_PERIODS    = PERIOD_MAPPING.keys
     AVAILABLE_TIME_UNITS = PERIOD_MAPPING.values
 
-    attr_reader :period
+    attr_reader :name
     attr_reader :length
     attr_reader :format
 
@@ -20,37 +20,37 @@ module Von
     # period - the time period one of AVAILABLE_PERIODS
     # length - length of period
     def initialize(period, length = nil)
-      period = period.to_sym
-      if AVAILABLE_PERIODS.include?(period)
-        @period = period
-      elsif AVAILABLE_TIME_UNITS.include?(period)
-        @period = PERIOD_MAPPING.invert[period]
+      name = period.to_sym
+      if AVAILABLE_PERIODS.include?(name)
+        @name = name
+      elsif AVAILABLE_TIME_UNITS.include?(name)
+        @name = PERIOD_MAPPING.invert[name]
       else
         raise ArgumentError, "`#{period}' is not a valid period"
       end
       @length = length
-      @format = Von.config.send(:"#{@period}_format")
+      @format = Von.config.send(:"#{@name}_format")
     end
 
     # TODO: take this out, dirty
     def to_s
-      @period.to_s
+      @name.to_s
     end
 
     # Returns a Symbol representing the time unit
     # for the current period.
     def time_unit
-      @time_unit ||= PERIOD_MAPPING[@period]
+      @time_unit ||= PERIOD_MAPPING[@name]
     end
 
     # Returns True or False if the period is hourly
     def hours?
-      @period == :hourly
+      @name == :hourly
     end
 
     # Returns True or False if the period is minutely
     def minutes?
-      @period == :minutely
+      @name == :minutely
     end
 
     def beginning(time)
@@ -68,7 +68,7 @@ module Von
     def timestamp
       beginning(Time.now).strftime(format)
     end
-    
+
     def self.unit_to_period(time_unit)
       PERIOD_MAPPING.invert[time_unit]
     end
