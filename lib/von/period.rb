@@ -32,11 +32,6 @@ module Von
       @format = Von.config.send(:"#{@name}_format")
     end
 
-    # TODO: take this out, dirty
-    def to_s
-      @name.to_s
-    end
-
     # Returns a Symbol representing the time unit
     # for the current period.
     def time_unit

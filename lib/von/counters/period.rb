@@ -9,21 +9,21 @@ module Von
       end
 
       # Returns the Redis hash key used for storing counts for this Period
-      def hash_key(period)
-        "#{Von.config.namespace}:counters:#{@field}:#{period}"
+      def hash_key(name)
+        "#{Von.config.namespace}:counters:#{@field}:#{name}"
       end
 
       # Returns the Redis list key used for storing current "active" counters
-      def list_key(period)
-        "#{Von.config.namespace}:lists:#{@field}:#{period}"
+      def list_key(name)
+        "#{Von.config.namespace}:lists:#{@field}:#{name}"
       end
 
       def increment
         return if @periods.empty?
 
         @periods.each do |period|
-          _hash_key = hash_key(period)
-          _list_key = list_key(period)
+          _hash_key = hash_key(period.name)
+          _list_key = list_key(period.name)
 
           hincrby(_hash_key, period.timestamp, 1)
 

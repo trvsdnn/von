@@ -13,7 +13,7 @@ describe Von do
     3.times { Von.increment('foo') }
     Von.count('foo').total.must_equal 3
   end
-  
+
   it "increments a counter and parent counters and counts them" do
     3.times { Von.increment('foo:bar') }
     Von.count('foo').total.must_equal 3

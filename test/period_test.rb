@@ -11,21 +11,21 @@ describe Von::Period do
 
   it "intiializes given a period" do
     period = Period.new(:monthly)
-    period.to_s.must_equal 'monthly'
+    period.name.must_equal :monthly
     period.length.must_be_nil
     period.format.must_equal '%Y-%m'
   end
 
   it "intiializes given a time unit" do
     period = Period.new(:month)
-    period.to_s.must_equal 'monthly'
+    period.name.must_equal :monthly
     period.length.must_be_nil
     period.format.must_equal '%Y-%m'
   end
 
   it "intiializes given a period and length" do
     period = Period.new(:monthly, 3)
-    period.to_s.must_equal 'monthly'
+    period.name.must_equal :monthly
     period.length.must_equal 3
     period.format.must_equal '%Y-%m'
   end
