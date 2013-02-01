@@ -25,12 +25,11 @@ module Von
 
     def per(unit)
       periods = Von.config.periods[@field]
-      period  = Period.unit_to_period(unit)
 
-      if period.nil?
+      if !Period.time_unit_exists?(unit)
         raise ArgumentError, "`#{unit}' is an unknown time unit"
       else
-        Counters::Period.new(@field, periods).count(period)
+        Counters::Period.new(@field, periods).count(unit)
       end
     rescue Redis::BaseError => e
       raise e if Von.config.raise_connection_errors

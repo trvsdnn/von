@@ -9,21 +9,21 @@ module Von
       end
 
       # Returns the Redis hash key used for storing counts for this Period
-      def hash_key(name)
-        "#{Von.config.namespace}:counters:#{@field}:#{name}"
+      def hash_key(time_unit)
+        "#{Von.config.namespace}:counters:#{@field}:#{time_unit}"
       end
 
       # Returns the Redis list key used for storing current "active" counters
-      def list_key(name)
-        "#{Von.config.namespace}:lists:#{@field}:#{name}"
+      def list_key(time_unit)
+        "#{Von.config.namespace}:lists:#{@field}:#{time_unit}"
       end
 
       def increment
         return if @periods.empty?
 
         @periods.each do |period|
-          _hash_key = hash_key(period.name)
-          _list_key = list_key(period.name)
+          _hash_key = hash_key(period.time_unit)
+          _list_key = list_key(period.time_unit)
 
           hincrby(_hash_key, period.timestamp, 1)
 
@@ -41,19 +41,19 @@ module Von
       # Count the fields for the given time period for this Counter.
       #
       # Returns an Array of Hashes representing the count
-      def count(period)
+      def count(time_unit)
         return if @periods.empty?
 
         counts     = []
         this_period = nil
-        _period     = @periods.select { |p| p.name == period }.first
+        _period     = @periods.select { |p| p.time_unit == time_unit }.first
 
         _period.length.times do |i|
           this_period = _period.prev(i)
           counts.unshift(this_period)
         end
 
-        keys = hgetall(hash_key(period))
+        keys = hgetall(hash_key(time_unit))
         counts.map { |date| { :timestamp => date, :count => keys.fetch(date, 0).to_i }}
       end
 
