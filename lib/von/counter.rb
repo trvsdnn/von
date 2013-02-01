@@ -37,13 +37,12 @@ module Von
     end
 
     def best(unit)
-      periods     = Von.config.bests[@field]
-      period_name = Period.unit_to_period(unit)
+      periods = Von.config.bests[@field]
 
-      if period_name.nil?
+      if !Period.time_unit_exists?(unit)
         raise ArgumentError, "`#{unit}' is an unknown time unit"
       else
-        Counters::Best.new(@field, periods).count(period_name)
+        Counters::Best.new(@field, periods).count(unit)
       end
     rescue Redis::BaseError => e
       raise e if Von.config.raise_connection_errors

@@ -12,49 +12,49 @@ module Von
         @hash_key ||= "#{Von.config.namespace}:counters:bests:#{@field}"
       end
 
-      def best_total(period_name)
-        hget("#{hash_key}:#{period_name}:best", 'total').to_i
+      def best_total(time_unit)
+        hget("#{hash_key}:#{time_unit}:best", 'total').to_i
       end
 
-      def best_timestamp(period_name)
-        hget("#{hash_key}:#{period_name}:best", 'timestamp')
+      def best_timestamp(time_unit)
+        hget("#{hash_key}:#{time_unit}:best", 'timestamp')
       end
 
-      def current_total(period_name)
-        hget("#{hash_key}:#{period_name}:current", 'total').to_i
+      def current_total(time_unit)
+        hget("#{hash_key}:#{time_unit}:current", 'total').to_i
       end
 
-      def current_timestamp(period_name)
-        hget("#{hash_key}:#{period_name}:current", 'timestamp')
+      def current_timestamp(time_unit)
+        hget("#{hash_key}:#{time_unit}:current", 'timestamp')
       end
 
       def increment
         return if @periods.empty?
 
         @periods.each do |period|
-          _current_timestamp = current_timestamp(period.name)
-          _current_total     = current_total(period.name)
+          _current_timestamp = current_timestamp(period.time_unit)
+          _current_total     = current_total(period.time_unit)
 
           if period.timestamp != _current_timestamp
             # changing current period
-            hset("#{hash_key}:#{period.name}:current", 'total', 1)
-            hset("#{hash_key}:#{period.name}:current", 'timestamp', period.timestamp)
+            hset("#{hash_key}:#{period.time_unit}:current", 'total', 1)
+            hset("#{hash_key}:#{period.time_unit}:current", 'timestamp', period.timestamp)
 
             if best_total(period) < _current_total
-              hset("#{hash_key}:#{period.name}:best", 'total', _current_total)
-              hset("#{hash_key}:#{period.name}:best", 'timestamp', _current_timestamp)
+              hset("#{hash_key}:#{period.time_unit}:best", 'total', _current_total)
+              hset("#{hash_key}:#{period.time_unit}:best", 'timestamp', _current_timestamp)
             end
           else
-            hincrby("#{hash_key}:#{period.name}:current", 'total', 1)
+            hincrby("#{hash_key}:#{period.time_unit}:current", 'total', 1)
           end
         end
       end
 
-      def count(period_name)
-        _current_timestamp = current_timestamp(period_name)
-        _current_total     = current_total(period_name)
-        _best_timestamp    = best_timestamp(period_name)
-        _best_total        = best_total(period_name)
+      def count(time_unit)
+        _current_timestamp = current_timestamp(time_unit)
+        _current_total     = current_total(time_unit)
+        _best_timestamp    = best_timestamp(time_unit)
+        _best_total        = best_total(time_unit)
 
         if _current_total > _best_total
           { :timestamp => _current_timestamp, :count => _current_total }
