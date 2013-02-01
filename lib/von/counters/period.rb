@@ -54,7 +54,7 @@ module Von
         end
 
         keys = hgetall(hash_key(period))
-        counts.map { |date| { date => keys.fetch(date, 0).to_i }}
+        counts.map { |date| { :timestamp => date, :count => keys.fetch(date, 0).to_i }}
       end
 
     end

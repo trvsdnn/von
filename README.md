@@ -64,9 +64,9 @@ Von.increment('page-views')
 # get the total downloads (returns an Integer)
 Von.count('downloads').total       #=> 4
 # get the monthly counts (returns an Array of Hashes)
-Von.count('uploads').per(:month)   #=> [ { '2012-03' => 3 }, { '2013-04' => 1 }, { '2013-05' => 0 }]
+Von.count('uploads').per(:month)   #=> [ { :timestamp => '2012-03', :count => 3 }, { :timestamp => '2013-04', :count => 1 }, { :timestamp => '2013-05', :count => 0 }]
 # get the best day for downloads (returns a Hash)
-Von.count('downloads').best(:day)  #=> { '2012-03-01' => 10 }
+Von.count('downloads').best(:day)  #=> { :timestamp => '2012-03-01', :count => 10 }
 
 ```
 

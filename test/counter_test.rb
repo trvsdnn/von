@@ -33,7 +33,7 @@ describe Von::Counter do
     Timecop.freeze(Time.local(2013, 03))
     Von.increment('foo')
 
-    Counter.new('foo').per(:month).must_equal [{ "2013-02" => 1 }, { "2013-03" => 1 }]
+    Counter.new('foo').per(:month).must_equal [{:timestamp => "2013-02", :count => 1}, {:timestamp => "2013-03", :count => 1}]
   end
 
   it "returns best count for a given period" do
@@ -48,8 +48,8 @@ describe Von::Counter do
     Timecop.freeze(Time.local(2013, 01, 20, 06, 10))
     3.times { Von.increment('foo') }
 
-    Counter.new('foo').best(:minute).must_equal({ "2013-01-13 06:05" => 4 })
-    Counter.new('foo').best(:week).must_equal({ "2013-01-07" => 4 })
+    Counter.new('foo').best(:minute).must_equal({:timestamp => "2013-01-13 06:05", :count => 4})
+    Counter.new('foo').best(:week).must_equal({:timestamp => "2013-01-07", :count => 4})
   end
 
 

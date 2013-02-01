@@ -57,9 +57,9 @@ module Von
         _best_total        = best_total(period_name)
 
         if _current_total > _best_total
-          { _current_timestamp => _current_total }
+          { :timestamp => _current_timestamp, :count => _current_total }
         else
-          { _best_timestamp => _best_total }
+          { :timestamp => _best_timestamp, :count => _best_total }
         end
       end
 
