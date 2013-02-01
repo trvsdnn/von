@@ -84,30 +84,4 @@ describe Von::Period do
     Period.new(:yearly).format.must_equal Von.config.yearly_format
   end
 
-  # it "builds a redis hash key string" do
-  #   field  = 'foo'
-  #   period = :hourly
-  #   period_obj = Period.new(field, period, 6)
-  # 
-  #   period_obj.hash_key.must_equal "#{@config.namespace}:counters:#{field}:#{period}"
-  # end
-  # 
-  # it "builds a redis list key string" do
-  #   field  = 'foo'
-  #   period = :hourly
-  #   period_obj = Period.new(field, period, 6)
-  # 
-  #   period_obj.list_key.must_equal "#{@config.namespace}:lists:#{field}:#{period}"
-  # end
-  # 
-  # it "builds a redis field for the given period and current time" do
-  #   Timecop.freeze(Time.local(2013, 02, 01, 05, 15))
-  #   Period.new('foo', :minutely, 6).field.must_equal '2013-02-01 05:15'
-  #   Period.new('foo', :hourly, 6).field.must_equal '2013-02-01 05:00'
-  #   Period.new('foo', :daily, 6).field.must_equal '2013-02-01'
-  #   Period.new('foo', :weekly, 6).field.must_equal '2013-01-28'
-  #   Period.new('foo', :monthly, 6).field.must_equal '2013-02'
-  #   Period.new('foo', :yearly, 6).field.must_equal '2013'
-  # end
-
 end
