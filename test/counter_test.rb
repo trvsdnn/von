@@ -52,5 +52,19 @@ describe Von::Counter do
     Counter.new('foo').best(:week).must_equal({:timestamp => "2013-01-07", :count => 4})
   end
 
+  it "returns current count for a given period" do
+    Von.configure do |config|
+      config.counter 'foo', :current => [:minute, :day]
+    end
+
+    4.times { Von.increment('foo') }
+    Timecop.freeze(Time.local(2013, 01, 20, 06, 10))
+    3.times { Von.increment('foo') }
+
+    Counter.new('foo').this(:minute).must_equal 3
+    Counter.new('foo').this(:day).must_equal 3
+    Counter.new('foo').today.must_equal 3
+  end
+
 
 end

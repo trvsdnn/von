@@ -71,5 +71,9 @@ module Von
     def self.exists?(period)
       AVAILABLE_PERIODS.include?(period)
     end
+
+    def self.time_unit_exists?(time_unit)
+      AVAILABLE_TIME_UNITS.include?(time_unit)
+    end
   end
 end

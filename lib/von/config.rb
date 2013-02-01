@@ -82,6 +82,12 @@ module Von
       @bests.has_key?(counter.field)
     end
 
+    # Returns a True if a current is defined for the
+    # given counter
+    def currents_defined_for_counter?(counter)
+      @currents.has_key?(counter.field)
+    end
+
     private
 
     def set_period(field, period, length)

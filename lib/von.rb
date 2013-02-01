@@ -8,6 +8,7 @@ require 'von/counters/commands'
 require 'von/counters/total'
 require 'von/counters/period'
 require 'von/counters/best'
+require 'von/counters/current'
 require 'von/version'
 
 module Von
@@ -51,6 +52,11 @@ module Von
     if config.bests_defined_for_counter?(counter)
       periods = config.bests[counter.field]
       Counters::Best.new(counter.field, periods).increment
+    end
+
+    if config.currents_defined_for_counter?(counter)
+      periods = config.currents[counter.field]
+      Counters::Current.new(counter.field, periods).increment
     end
 
     total
