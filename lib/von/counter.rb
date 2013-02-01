@@ -59,6 +59,8 @@ module Von
       raise e if Von.config.raise_connection_errors
     end
 
+    alias :current :this
+
     def today
       periods = Von.config.currents[@field]
 

@@ -62,7 +62,9 @@ describe Von::Counter do
     3.times { Von.increment('foo') }
 
     Counter.new('foo').this(:minute).must_equal 3
+    Counter.new('foo').current(:minute).must_equal 3
     Counter.new('foo').this(:day).must_equal 3
+    Counter.new('foo').current(:day).must_equal 3
     Counter.new('foo').today.must_equal 3
   end
 
