@@ -1,7 +1,7 @@
 require 'test_helper'
 
 describe Von::Counters::Total do
-  Counter = Von::Counters::Total
+  TotalCounter = Von::Counters::Total
 
   before :each do
     Timecop.freeze(Time.local(2013, 01, 01, 01, 01))
@@ -11,7 +11,7 @@ describe Von::Counters::Total do
   end
 
   it "increments the total counter if given a single key" do
-    counter = Counter.new('foo')
+    counter = TotalCounter.new('foo')
 
     counter.increment
     @redis.hget('von:counters:foo', 'total').must_equal '1'
@@ -21,7 +21,7 @@ describe Von::Counters::Total do
   end
 
   it "gets a total count for a counter" do
-    counter = Counter.new('foo')
+    counter = TotalCounter.new('foo')
     counter.increment
     counter.increment
     counter.increment
