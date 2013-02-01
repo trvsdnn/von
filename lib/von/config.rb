@@ -13,13 +13,15 @@ module Von
     attr_accessor :hourly_format
     attr_accessor :minutely_format
 
-    attr_reader  :periods
-    attr_reader  :bests
+    attr_reader :periods
+    attr_reader :bests
+    attr_reader :currents
 
     def init!
-      @periods         = {}
-      @bests           = {}
-      @totals          = {}
+      @periods  = {}
+      @bests    = {}
+      @currents = {}
+      @totals   = {}
       # all keys are prefixed with this namespace
       self.namespace = 'von'
       # rescue Redis connection errors
@@ -63,6 +65,7 @@ module Von
       options.each do |option, value|
         set_period(field, option, value) if Period.exists?(option)
         set_best(field, value) if option == :best
+        set_current(field, value) if option == :current
       end
     end
 
@@ -92,6 +95,11 @@ module Von
       }
     end
 
+    def set_current(field, time_unit)
+      @currents[field] = [ time_unit ].flatten.map { |u|
+        Period.new(u)
+      }
+    end
 
   end
 end

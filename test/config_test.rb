@@ -18,7 +18,7 @@ describe Von::Config do
     @config.namespace.must_equal 'something'
   end
 
-  it "allows periods to be set via counter method" do
+  it "sets periods via counter method" do
     Von.configure do |config|
       config.counter 'bar', :monthly => 3, :daily => 6
     end
@@ -30,7 +30,7 @@ describe Von::Config do
     Von.config.periods[:bar].last.length.must_equal 6
   end
 
-  it "allows bests to be set via counter method" do
+  it "sets bests via counter method" do
     Von.configure do |config|
       config.counter 'bar', :best => :day
       config.counter 'foo', :best => [ :month, :year ]
@@ -42,6 +42,20 @@ describe Von::Config do
     Von.config.bests[:foo].first.name.must_equal :monthly
     Von.config.bests[:foo].last.must_be_instance_of Von::Period
     Von.config.bests[:foo].last.name.must_equal :yearly
+  end
+
+  it "sets currents via counter method" do
+    Von.configure do |config|
+      config.counter 'bar', :current => :day
+      config.counter 'foo', :current => [ :month, :year ]
+    end
+
+    Von.config.currents[:bar].first.must_be_instance_of Von::Period
+    Von.config.currents[:bar].first.name.must_equal :daily
+    Von.config.currents[:foo].first.must_be_instance_of Von::Period
+    Von.config.currents[:foo].first.name.must_equal :monthly
+    Von.config.currents[:foo].last.must_be_instance_of Von::Period
+    Von.config.currents[:foo].last.name.must_equal :yearly
   end
 
 end
