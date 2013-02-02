@@ -34,6 +34,20 @@ Von.configure do |config|
 end
 ```
 
+## Tracking the Current Time Period
+
+If just wanna track stats on the current minute/hour/day/week/etc, you can set that up pretty easily with Von:
+
+```ruby
+Von.configure do |config|
+    # Track downloads stats for the current hour
+    config.counter 'downloads', :current => :hour
+
+    # Track page views for the current day and week
+    config.counter 'page-views', :current => [ :day, :week ]
+end
+```
+
 ## Tracking "Bests"
 
 Time periods are pretty cool, but sometimes you wanna know when you did your best. You can track these with Von as well:
@@ -43,12 +57,12 @@ Von.configure do |config|
     # Track the best day for downloads
     config.counter 'downloads', :best => :day
 
-    # Track the best hour and week for page-views
+    # Track the best hour and week for page views
     config.counter 'page-views', :best => [ :hour, :week ]
 end
 ```
 
-### Incrementing
+## Incrementing
 
 Once you've configured the keys you don't have to do anything special, just increment the key, Von will handle this rest.
 
@@ -63,11 +77,21 @@ Von.increment('page-views')
 ```ruby
 # get the total downloads (returns an Integer)
 Von.count('downloads').total       #=> 4
+
 # get the monthly counts (returns an Array of Hashes)
 Von.count('uploads').per(:month)   #=> [ { :timestamp => '2012-03', :count => 3 }, { :timestamp => '2013-04', :count => 1 }, { :timestamp => '2013-05', :count => 0 }]
+
+# get the download stats for the hour
+Von.count('downloads').this(:hour)          #=> 10
+# or
+Von.count('downloads').current(:hour)       #=> 10
+
+# get the page-views for today
+Von.count('page-views').today               #=> 78
+Von.count('page-views').current(:day)       #=> 78
+
 # get the best day for downloads (returns a Hash)
 Von.count('downloads').best(:day)  #=> { :timestamp => '2012-03-01', :count => 10 }
-
 ```
 
 One nice thing to note, if you're counting a time period and there wasn't a value stored for the particular hour/day/week/etc, it'll be populated with a zero, this ensures that if you want 30 days of stats, you get 30 days of stats.
