@@ -1,7 +1,7 @@
 module Von
   module Counters
     class Best
-      include Von::Counters::Commands
+      include Commands
 
       def initialize(field, periods = nil)
         @field   = field.to_sym
