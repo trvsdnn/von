@@ -26,5 +26,5 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'minitest', '~> 3.0.0'
   gem.add_development_dependency 'fakeredis', '~> 0.4.1'
   gem.add_development_dependency 'mocha', '~> 0.11.4'
-  gem.add_development_dependency 'timecop', '~> 0.5.9.1'
+  gem.add_development_dependency 'timecop', '>= 0.5.9.1'
 end
