@@ -14,13 +14,12 @@ describe Von::Config do
 
   it 'initializes a config and overloads it with a block' do
     @config.namespace = 'something'
-
     @config.namespace.must_equal 'something'
   end
 
   it "sets periods via counter method" do
     Von.configure do |config|
-      config.counter 'bar', :monthly => 3, :daily => 6
+      config.counter 'bar', monthly: 3, daily: 6
     end
 
     Von.config.periods[:bar].length.must_equal 2
@@ -32,8 +31,8 @@ describe Von::Config do
 
   it "sets bests via counter method" do
     Von.configure do |config|
-      config.counter 'bar', :best => :day
-      config.counter 'foo', :best => [ :month, :year ]
+      config.counter 'bar', best: :day
+      config.counter 'foo', best: [:month, :year]
     end
 
     Von.config.bests[:bar].first.must_be_instance_of Von::Period
@@ -46,8 +45,8 @@ describe Von::Config do
 
   it "sets currents via counter method" do
     Von.configure do |config|
-      config.counter 'bar', :current => :day
-      config.counter 'foo', :current => [ :month, :year ]
+      config.counter 'bar', current: :day
+      config.counter 'foo', current: [:month, :year]
     end
 
     Von.config.currents[:bar].first.must_be_instance_of Von::Period
