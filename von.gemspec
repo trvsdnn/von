@@ -10,7 +10,7 @@ Gem::Specification.new do |gem|
   gem.email         = ["tdunn13@gmail.com"]
   gem.description   = "Von is an opinionated Redis stats tracker."
   gem.summary       = "Von is an opinionated Redis stats tracker."
-  gem.homepage      = ""
+  gem.homepage      = "https://github.com/blahed/von"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
