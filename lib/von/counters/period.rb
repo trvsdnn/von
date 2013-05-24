@@ -44,9 +44,8 @@ module Von
       def count(time_unit)
         return if @periods.empty?
 
-        counts     = []
-        this_period = nil
-        _period     = @periods.select { |p| p.time_unit == time_unit }.first
+        counts  = []
+        _period = @periods.select { |p| p.time_unit == time_unit }.first
 
         _period.length.times do |i|
           this_period = _period.prev(i)
