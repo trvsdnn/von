@@ -26,10 +26,10 @@ module Von
     def per(unit)
       periods = Von.config.periods[@field]
 
-      if !Period.time_unit_exists?(unit)
-        raise ArgumentError, "`#{unit}' is an unknown time unit"
-      else
+      if Period.time_unit_exists?(unit)
         Counters::Period.new(@field, periods).count(unit)
+      else
+        raise ArgumentError, "`#{unit}' is an unknown time unit"
       end
     rescue Redis::BaseError => e
       raise e if Von.config.raise_connection_errors
@@ -38,10 +38,10 @@ module Von
     def best(unit)
       periods = Von.config.bests[@field]
 
-      if !Period.time_unit_exists?(unit)
-        raise ArgumentError, "`#{unit}' is an unknown time unit"
-      else
+      if Period.time_unit_exists?(unit)
         Counters::Best.new(@field, periods).count(unit)
+      else
+        raise ArgumentError, "`#{unit}' is an unknown time unit"
       end
     rescue Redis::BaseError => e
       raise e if Von.config.raise_connection_errors
@@ -50,10 +50,10 @@ module Von
     def this(unit)
       periods = Von.config.currents[@field]
 
-      if !Period.time_unit_exists?(unit)
-        raise ArgumentError, "`#{unit}' is an unknown time unit"
-      else
+      if Period.time_unit_exists?(unit)
         Counters::Current.new(@field, periods).count(unit)
+      else
+        raise ArgumentError, "`#{unit}' is an unknown time unit"
       end
     rescue Redis::BaseError => e
       raise e if Von.config.raise_connection_errors

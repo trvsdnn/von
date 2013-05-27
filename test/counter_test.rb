@@ -21,10 +21,9 @@ describe Von::Counter do
     Counter.new('foo:bar').total.must_equal 3
   end
 
-
   it "returns counts for a given period" do
     Von.configure do |config|
-      config.counter 'foo', :monthly => 2
+      config.counter 'foo', monthly: 2
     end
 
     Von.increment('foo')
@@ -33,12 +32,12 @@ describe Von::Counter do
     Timecop.freeze(Time.local(2013, 03))
     Von.increment('foo')
 
-    Counter.new('foo').per(:month).must_equal [{:timestamp => "2013-02", :count => 1}, {:timestamp => "2013-03", :count => 1}]
+    Counter.new('foo').per(:month).must_equal [{ timestamp: "2013-02", count: 1 }, { timestamp: "2013-03", count: 1 }]
   end
 
   it "returns best count for a given period" do
     Von.configure do |config|
-      config.counter 'foo', :best => [:minute, :week]
+      config.counter 'foo', best: [:minute, :week]
     end
 
     Von.increment('foo')
@@ -48,13 +47,13 @@ describe Von::Counter do
     Timecop.freeze(Time.local(2013, 01, 20, 06, 10))
     3.times { Von.increment('foo') }
 
-    Counter.new('foo').best(:minute).must_equal({:timestamp => "2013-01-13 06:05", :count => 4})
-    Counter.new('foo').best(:week).must_equal({:timestamp => "2013-01-07", :count => 4})
+    Counter.new('foo').best(:minute).must_equal({ timestamp: "2013-01-13 06:05", count: 4 })
+    Counter.new('foo').best(:week).must_equal({ timestamp: "2013-01-07", count: 4 })
   end
 
   it "returns current count for a given period" do
     Von.configure do |config|
-      config.counter 'foo', :current => [:minute, :day]
+      config.counter 'foo', current: [:minute, :day]
     end
 
     4.times { Von.increment('foo') }

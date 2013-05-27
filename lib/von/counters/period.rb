@@ -1,7 +1,7 @@
 module Von
   module Counters
     class Period
-      include Von::Counters::Commands
+      include Commands
 
       def initialize(field, periods = nil)
         @field   = field.to_sym
@@ -44,9 +44,8 @@ module Von
       def count(time_unit)
         return if @periods.empty?
 
-        counts     = []
-        this_period = nil
-        _period     = @periods.select { |p| p.time_unit == time_unit }.first
+        counts  = []
+        _period = @periods.select { |p| p.time_unit == time_unit }.first
 
         _period.length.times do |i|
           this_period = _period.prev(i)
@@ -54,7 +53,7 @@ module Von
         end
 
         keys = hgetall(hash_key(time_unit))
-        counts.map { |date| { :timestamp => date, :count => keys.fetch(date, 0).to_i }}
+        counts.map { |date| { timestamp: date, count: keys.fetch(date, 0).to_i }}
       end
 
     end

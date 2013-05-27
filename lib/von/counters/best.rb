@@ -1,7 +1,7 @@
 module Von
   module Counters
     class Best
-      include Von::Counters::Commands
+      include Commands
 
       def initialize(field, periods = nil)
         @field   = field.to_sym
@@ -57,9 +57,9 @@ module Von
         _best_total        = best_total(time_unit)
 
         if _current_total > _best_total
-          { :timestamp => _current_timestamp, :count => _current_total }
+          { timestamp: _current_timestamp, count: _current_total }
         else
-          { :timestamp => _best_timestamp, :count => _best_total }
+          { timestamp: _best_timestamp, count: _best_total }
         end
       end
 
