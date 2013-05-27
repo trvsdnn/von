@@ -22,7 +22,7 @@ describe Von do
 
   it "increments period/best counters and counts them" do
     Von.configure do |config|
-      config.counter 'foo', :monthly => 2, :best => :day
+      config.counter 'foo', monthly: 2, best: :day
     end
 
     Von.increment('foo')
@@ -32,8 +32,8 @@ describe Von do
     Timecop.freeze(Time.local(2013, 03, 04))
     Von.increment('foo')
 
-    Von.count('foo').best(:day).must_equal({:timestamp => "2013-02-03", :count => 2})
-    Von.count('foo').per(:month).must_equal [{:timestamp => "2013-02", :count => 2}, {:timestamp => "2013-03", :count => 1}]
+    Von.count('foo').best(:day).must_equal({ timestamp: "2013-02-03", count: 2 })
+    Von.count('foo').per(:month).must_equal [{ timestamp: "2013-02", count: 2 }, { timestamp: "2013-03", count: 1 }]
   end
 
   it "raises a Redis connection errors if raise_connection_errors is true" do

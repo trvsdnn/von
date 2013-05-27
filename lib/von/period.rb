@@ -1,13 +1,14 @@
 module Von
   class Period
     PERIOD_MAPPING = {
-      :minutely => :minute,
-      :hourly   => :hour,
-      :daily    => :day,
-      :weekly   => :week,
-      :monthly  => :month,
-      :yearly   => :year
+      minutely: :minute,
+      hourly: :hour,
+      daily: :day,
+      weekly: :week,
+      monthly: :month,
+      yearly: :year
     }
+
     AVAILABLE_PERIODS    = PERIOD_MAPPING.keys
     AVAILABLE_TIME_UNITS = PERIOD_MAPPING.values
 
@@ -50,7 +51,7 @@ module Von
 
     def beginning(time)
       if minutes?
-        time.change(:seconds => 0)
+        time.change(seconds: 0)
       else
         time.send(:"beginning_of_#{time_unit}")
       end

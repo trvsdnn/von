@@ -1,7 +1,8 @@
 module Von
   module Counters
     class Total
-      include Von::Counters::Commands
+      include Commands
+
       attr_reader :field
 
       # Initialize a new Counter

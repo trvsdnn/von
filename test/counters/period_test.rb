@@ -64,14 +64,14 @@ describe Von::Counters::Period do
     Timecop.freeze(Time.local(2013, 02, 01, 9))
     counter.increment
 
-    counter.count(:month).must_equal [{:timestamp => "2013-02", :count => 2}]
+    counter.count(:month).must_equal [{ timestamp: "2013-02", count: 2 }]
     counter.count(:hour).must_equal [
-      { :timestamp => "2013-02-01 04:00", :count => 0 },
-      { :timestamp => "2013-02-01 05:00", :count => 0 },
-      { :timestamp => "2013-02-01 06:00", :count => 0 },
-      { :timestamp => "2013-02-01 07:00", :count => 1 },
-      { :timestamp => "2013-02-01 08:00", :count => 0 },
-      { :timestamp => "2013-02-01 09:00", :count => 1 }
+      { timestamp: "2013-02-01 04:00", count: 0 },
+      { timestamp: "2013-02-01 05:00", count: 0 },
+      { timestamp: "2013-02-01 06:00", count: 0 },
+      { timestamp: "2013-02-01 07:00", count: 1 },
+      { timestamp: "2013-02-01 08:00", count: 0 },
+      { timestamp: "2013-02-01 09:00", count: 1 }
     ]
   end
 

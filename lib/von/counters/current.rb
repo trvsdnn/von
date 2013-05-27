@@ -1,7 +1,7 @@
 module Von
   module Counters
     class Current
-      include Von::Counters::Commands
+      include Commands
 
       # Initialize a new Counter
       #
