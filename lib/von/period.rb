@@ -61,8 +61,8 @@ module Von
       beginning(unit.send(time_unit.to_sym).ago).strftime(@format)
     end
 
-    def timestamp
-      beginning(Time.now).strftime(format)
+    def timestamp(time=Time.now)
+      beginning(time).strftime(format)
     end
 
     def self.unit_to_period(time_unit)

@@ -26,12 +26,12 @@ module Von
     yield(config)
   end
 
-  def self.increment(field, value=1)
+  def self.increment(field, value=1, timestamp=Time.now)
     parents = field.to_s.sub(PARENT_REGEX, '')
-    total   = increment_counts_for(field, value)
+    total   = increment_counts_for(field, value, timestamp)
 
     until parents.empty? do
-      increment_counts_for(parents, value)
+      increment_counts_for(parents, value, timestamp)
       parents.sub!(PARENT_REGEX, '')
     end
 
@@ -40,23 +40,23 @@ module Von
     raise e if config.raise_connection_errors
   end
 
-  def self.increment_counts_for(field, value=1)
+  def self.increment_counts_for(field, value=1, timestamp=Time.now)
     counter = Counters::Total.new(field)
     total   = counter.increment(value)
 
     if config.periods_defined_for_counter?(counter)
       periods = config.periods[counter.field]
-      Counters::Period.new(counter.field, periods).increment(value)
+      Counters::Period.new(counter.field, periods).increment(value, timestamp)
     end
 
     if config.bests_defined_for_counter?(counter)
       periods = config.bests[counter.field]
-      Counters::Best.new(counter.field, periods).increment(value)
+      Counters::Best.new(counter.field, periods).increment(value, timestamp)
     end
 
     if config.currents_defined_for_counter?(counter)
       periods = config.currents[counter.field]
-      Counters::Current.new(counter.field, periods).increment(value)
+      Counters::Current.new(counter.field, periods).increment(value, timestamp)
     end
 
     total

@@ -42,8 +42,7 @@ describe Von::Counters::Period do
     ])
 
     counter.increment
-    Timecop.freeze(Time.local(2013, 02))
-    counter.increment(5)
+    counter.increment(5, Time.local(2013, 02))
 
     @redis.hget('von:counters:foo:month', '2013-02').must_equal '5'
     @redis.lrange('von:lists:foo:month', 0, -1).size.must_equal 1
@@ -59,11 +58,20 @@ describe Von::Counters::Period do
 
     counter.increment
     counter.increment
-    Timecop.freeze(Time.local(2013, 02, 01, 7))
-    counter.increment(5)
-    Timecop.freeze(Time.local(2013, 02, 01, 9))
-    counter.increment
+    counter.count(:month).must_equal [{ timestamp: "2013-01", count: 2 }]
+    counter.count(:hour).must_equal [
+      { timestamp: "2012-12-31 20:00", count: 0 },
+      { timestamp: "2012-12-31 21:00", count: 0 },
+      { timestamp: "2012-12-31 22:00", count: 0 },
+      { timestamp: "2012-12-31 23:00", count: 0 },
+      { timestamp: "2013-01-01 00:00", count: 0 },
+      { timestamp: "2013-01-01 01:00", count: 2 }
+    ]
 
+    counter.increment(5, Time.local(2013, 02, 01, 7))
+    counter.increment(1, Time.local(2013, 02, 01, 9))
+
+    Timecop.freeze(Time.local(2013, 02, 01, 9))
     counter.count(:month).must_equal [{ timestamp: "2013-02", count: 6 }]
     counter.count(:hour).must_equal [
       { timestamp: "2013-02-01 04:00", count: 0 },

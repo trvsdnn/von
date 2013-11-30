@@ -21,7 +21,7 @@ module Von
       # If the key has time periods specified, increment those.
       #
       # Returns the Integer total for the key
-      def increment(value=1)
+      def increment(value=1, timestamp=nil)
         hincrby(hash_key, 'total', value).to_i
       end
 

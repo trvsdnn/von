@@ -14,8 +14,7 @@ describe Von::Counters::Current do
     counter = CurrentCounter.new('foo', [ Von::Period.new(:day) ])
 
     4.times { counter.increment }
-    Timecop.freeze(Time.local(2013, 01, 02))
-    3.times { counter.increment(2) }
+    3.times { counter.increment(2, Time.local(2013, 01, 02)) }
 
     @redis.hget('von:counters:currents:foo:day', 'timestamp').must_equal '2013-01-02'
     @redis.hget('von:counters:currents:foo:day', 'total').must_equal '6'
@@ -28,8 +27,7 @@ describe Von::Counters::Current do
     ])
 
     4.times { counter.increment }
-    Timecop.freeze(Time.local(2013, 01, 20, 06, 10))
-    3.times { counter.increment(2) }
+    3.times { counter.increment(2, Time.local(2013, 01, 20, 06, 10)) }
 
     @redis.hget('von:counters:currents:foo:minute', 'timestamp').must_equal '2013-01-20 06:10'
     @redis.hget('von:counters:currents:foo:minute', 'total').must_equal '6'
@@ -45,8 +43,7 @@ describe Von::Counters::Current do
     ])
 
     4.times { counter.increment }
-    Timecop.freeze(Time.local(2013, 01, 01, 06, 10))
-    3.times { counter.increment(2) }
+    3.times { counter.increment(2, Time.local(2013, 01, 01, 06, 10)) }
 
     counter.count(:minute).must_equal 6
     counter.count(:day).must_equal 10
