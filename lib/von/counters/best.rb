@@ -28,7 +28,7 @@ module Von
         hget("#{hash_key}:#{time_unit}:current", 'timestamp')
       end
 
-      def increment
+      def increment(by=1)
         return if @periods.empty?
 
         @periods.each do |period|
@@ -37,7 +37,7 @@ module Von
 
           if period.timestamp != _current_timestamp
             # changing current period
-            hset("#{hash_key}:#{period.time_unit}:current", 'total', 1)
+            hset("#{hash_key}:#{period.time_unit}:current", 'total', by)
             hset("#{hash_key}:#{period.time_unit}:current", 'timestamp', period.timestamp)
 
             if best_total(period) < _current_total
@@ -45,7 +45,7 @@ module Von
               hset("#{hash_key}:#{period.time_unit}:best", 'timestamp', _current_timestamp)
             end
           else
-            hincrby("#{hash_key}:#{period.time_unit}:current", 'total', 1)
+            hincrby("#{hash_key}:#{period.time_unit}:current", 'total', by)
           end
         end
       end

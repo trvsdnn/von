@@ -18,14 +18,14 @@ module Von
         "#{Von.config.namespace}:lists:#{@field}:#{time_unit}"
       end
 
-      def increment
+      def increment(by=1)
         return if @periods.empty?
 
         @periods.each do |period|
           _hash_key = hash_key(period.time_unit)
           _list_key = list_key(period.time_unit)
 
-          hincrby(_hash_key, period.timestamp, 1)
+          hincrby(_hash_key, period.timestamp, by)
 
           unless lrange(_list_key, 0, -1).include?(period.timestamp)
             rpush(_list_key, period.timestamp)

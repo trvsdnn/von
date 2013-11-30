@@ -16,17 +16,17 @@ describe Von::Counters::Total do
     counter.increment
     @redis.hget('von:counters:foo', 'total').must_equal '1'
 
-    counter.increment
-    @redis.hget('von:counters:foo', 'total').must_equal '2'
+    counter.increment(5)
+    @redis.hget('von:counters:foo', 'total').must_equal '6'
   end
 
   it "gets a total count for a counter" do
     counter = TotalCounter.new('foo')
     counter.increment
-    counter.increment
+    counter.increment(3)
     counter.increment
 
-    counter.count.must_equal 3
+    counter.count.must_equal 5
   end
 
 
