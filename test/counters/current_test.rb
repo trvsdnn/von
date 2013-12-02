@@ -15,10 +15,10 @@ describe Von::Counters::Current do
 
     4.times { counter.increment }
     Timecop.freeze(Time.local(2013, 01, 02))
-    3.times { counter.increment }
+    3.times { counter.increment(2) }
 
     @redis.hget('von:counters:currents:foo:day', 'timestamp').must_equal '2013-01-02'
-    @redis.hget('von:counters:currents:foo:day', 'total').must_equal '3'
+    @redis.hget('von:counters:currents:foo:day', 'total').must_equal '6'
   end
 
   it "increments the current counter for multiple periods" do
@@ -29,13 +29,13 @@ describe Von::Counters::Current do
 
     4.times { counter.increment }
     Timecop.freeze(Time.local(2013, 01, 20, 06, 10))
-    3.times { counter.increment }
+    3.times { counter.increment(2) }
 
     @redis.hget('von:counters:currents:foo:minute', 'timestamp').must_equal '2013-01-20 06:10'
-    @redis.hget('von:counters:currents:foo:minute', 'total').must_equal '3'
+    @redis.hget('von:counters:currents:foo:minute', 'total').must_equal '6'
 
     @redis.hget('von:counters:currents:foo:week', 'timestamp').must_equal '2013-01-14'
-    @redis.hget('von:counters:currents:foo:week', 'total').must_equal '3'
+    @redis.hget('von:counters:currents:foo:week', 'total').must_equal '6'
   end
 
   it "counts acurrent counter for a period" do
@@ -46,10 +46,10 @@ describe Von::Counters::Current do
 
     4.times { counter.increment }
     Timecop.freeze(Time.local(2013, 01, 01, 06, 10))
-    3.times { counter.increment }
+    3.times { counter.increment(2) }
 
-    counter.count(:minute).must_equal 3
-    counter.count(:day).must_equal 7
+    counter.count(:minute).must_equal 6
+    counter.count(:day).must_equal 10
   end
 
 end

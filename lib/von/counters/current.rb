@@ -20,15 +20,15 @@ module Von
         hget("#{hash_key}:#{time_unit}", 'timestamp')
       end
 
-      def increment
+      def increment(value=1)
         return if @periods.empty?
 
         @periods.each do |period|
           if period.timestamp != current_timestamp(period.time_unit)
-            hset("#{hash_key}:#{period.time_unit}", 'total', 1)
+            hset("#{hash_key}:#{period.time_unit}", 'total', value)
             hset("#{hash_key}:#{period.time_unit}", 'timestamp', period.timestamp)
           else
-            hincrby("#{hash_key}:#{period.time_unit}", 'total', 1)
+            hincrby("#{hash_key}:#{period.time_unit}", 'total', value)
           end
         end
       end

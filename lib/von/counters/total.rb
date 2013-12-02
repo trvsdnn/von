@@ -17,12 +17,12 @@ module Von
         "#{Von.config.namespace}:counters:#{@field}"
       end
 
-      # Increment the total count for this Counter
+      # Increment the total count for this Counter by given value
       # If the key has time periods specified, increment those.
       #
       # Returns the Integer total for the key
-      def increment
-        hincrby(hash_key, 'total', 1).to_i
+      def increment(value=1)
+        hincrby(hash_key, 'total', value).to_i
       end
 
       # Count the "total" field for this Counter.
