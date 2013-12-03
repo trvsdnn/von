@@ -15,10 +15,8 @@ describe Von::Counters::Best do
 
     counter.increment
 
-    Timecop.freeze(Time.local(2013, 01, 02))
-    4.times { counter.increment(2) }
-    Timecop.freeze(Time.local(2013, 01, 03))
-    3.times { counter.increment }
+    4.times { counter.increment(2, Time.local(2013, 01, 02)) }
+    3.times { counter.increment(1, Time.local(2013, 01, 03)) }
 
     @redis.hget('von:counters:bests:foo:day:current', 'timestamp').must_equal '2013-01-03'
     @redis.hget('von:counters:bests:foo:day:current', 'total').must_equal '3'
@@ -34,10 +32,8 @@ describe Von::Counters::Best do
 
     counter.increment
 
-    Timecop.freeze(Time.local(2013, 01, 13, 06, 05))
-    4.times { counter.increment(2) }
-    Timecop.freeze(Time.local(2013, 01, 20, 06, 10))
-    3.times { counter.increment }
+    4.times { counter.increment(2, Time.local(2013, 01, 13, 06, 05)) }
+    3.times { counter.increment(1, Time.local(2013, 01, 20, 06, 10)) }
 
     @redis.hget('von:counters:bests:foo:minute:current', 'timestamp').must_equal '2013-01-20 06:10'
     @redis.hget('von:counters:bests:foo:minute:current', 'total').must_equal '3'
