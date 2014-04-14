@@ -7,7 +7,7 @@ Bundler.setup
 require 'minitest/autorun'
 require 'minitest/pride'
 require 'fakeredis'
-require 'mocha'
+require 'mocha/mini_test'
 require 'timecop'
 
 require 'von'
